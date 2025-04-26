@@ -1,175 +1,163 @@
 # Technical Context: Clean Architecture Template with Authentication
 
-## Technologies Used
+## Framework and Tools
 
 ### Core Framework
 - **.NET 9**: Latest version of the .NET platform
 - **ASP.NET Core 9**: Web framework for building APIs and web applications
 - **Entity Framework Core 9**: ORM for data access
 
-### Authentication & Identity
+### Authentication and Authorization
 - **Microsoft.AspNetCore.Identity**: Framework for local identity management
 - **Microsoft.Identity.Web**: Library for Microsoft Entra ID integration
-- **JWT Bearer Authentication**: Token-based authentication for APIs
+- **Microsoft Graph SDK**: For accessing Microsoft Entra ID user and group data
 
-### Architecture & Patterns
-- **MediatR**: Implementation of mediator pattern for CQRS
+### Architecture and Design
+- **MediatR**: Implementation of the mediator pattern for CQRS
 - **FluentValidation**: Validation library for request validation
 - **AutoMapper**: Object-to-object mapping library
 
-### Database
-- **SQL Server**: Primary database provider
-- **PostgreSQL**: Alternative database provider
-- **EF Core Migrations**: Database schema management
-
-### UI & Frontend
-- **ASP.NET Core Blazor**: Component-based UI framework
-- **Bootstrap**: CSS framework for responsive design
-- **JavaScript/TypeScript**: Client-side scripting
+### API and Web UI
+- **ASP.NET Core MVC**: For API controllers
+- **ASP.NET Core Blazor**: For web UI components
+- **Swagger/OpenAPI**: For API documentation
 
 ### Testing
 - **xUnit**: Testing framework
-- **Moq**: Mocking framework for unit tests
+- **Moq**: Mocking library for unit tests
 - **FluentAssertions**: Fluent assertions for tests
-- **Respawn**: Database reset for integration tests
+- **Respawn**: Database reset tool for integration tests
 
-### DevOps & Deployment
-- **Docker**: Containerization
-- **Aspire**: .NET application hosting and deployment
+### Development and Deployment
+- **Aspire**: For service configuration and orchestration
+- **Docker**: Containerization for deployment
 - **GitHub Actions**: CI/CD pipeline
 
-## Development Setup
+## Technical Requirements
+
+### Security Requirements
+- **HTTPS Enforcement**: All communication must be encrypted
+- **Anti-Forgery Protection**: Prevention of CSRF attacks
+- **Secure Secret Storage**: Using user secrets or key vault
+- **OAuth 2.0 and OpenID Connect**: Standards compliance for authentication
+- **Claims-Based Authorization**: For fine-grained access control
+
+### Performance Requirements
+- **Efficient Queries**: Optimized database access
+- **Caching**: Where appropriate for performance
+- **Asynchronous Operations**: For non-blocking I/O
+
+### Scalability Requirements
+- **Stateless Design**: For horizontal scaling
+- **Database Independence**: Support for different providers
+- **Configuration Flexibility**: For different deployment scenarios
+
+### Maintainability Requirements
+- **Clean Architecture**: Clear separation of concerns
+- **Comprehensive Testing**: Unit and integration tests
+- **Consistent Coding Standards**: Using .editorconfig
+- **Documentation**: XML comments and README files
+
+## Development Environment
 
 ### Required Tools
-- **Visual Studio 2025** or **Visual Studio Code**
-- **.NET 9 SDK**
-- **Docker Desktop** (optional, for containerized development)
-- **SQL Server** or **PostgreSQL** (local or containerized)
+- **Visual Studio 2025** or **Visual Studio Code**: IDE
+- **SQL Server** or **PostgreSQL**: Database
+- **.NET 9 SDK**: Development kit
+- **Docker Desktop**: For containerization
+- **Git**: Version control
 
-### Local Development Configuration
-1. **Database Setup**:
-   - Local SQL Server or PostgreSQL instance
-   - Connection strings in `appsettings.Development.json`
-   - Automatic migrations on startup (development only)
+### Development Workflow
+1. **Setup**: Clone repository and restore packages
+2. **Configuration**: Set up user secrets for local development
+3. **Database**: Apply migrations to create local databases
+4. **Run**: Start the application with the appropriate configuration
 
-2. **Identity Provider Configuration**:
-   - EF Core Identity (default for development)
-   - Microsoft Entra ID (requires Azure subscription and app registration)
+### Project Configuration
+- **appsettings.json**: Base configuration
+- **appsettings.Development.json**: Development-specific settings
+- **User Secrets**: Local secrets (connection strings, API keys)
+- **Environment Variables**: For deployment environments
 
-3. **Environment Variables**:
-   - `ASPNETCORE_ENVIRONMENT`: Set to `Development`
-   - `IdentityProvider`: `EFCore` or `AzureAD`
-   - `DatabaseProvider`: `SqlServer` or `PostgreSQL`
+## Database Configuration
 
-### Project Structure Navigation
-- **Solution Structure**: Organized by Clean Architecture layers
-- **Project References**: Follow dependency rule (inner layers don't reference outer layers)
-- **Namespace Convention**: `CleanArchitectureTemplate.{Layer}.{Module}`
+### Database Providers
+- **SQL Server**: Primary supported provider
+- **PostgreSQL**: Alternative provider
+- **SQLite**: For testing and development
 
-## Technical Constraints
+### Connection Strings
+- **IdentityConnection**: For identity database (EF Core Identity)
+- **ApplicationConnection**: For application database
 
-### Framework Constraints
-- **.NET 9 Compatibility**: All libraries and components must be compatible
-- **Clean Architecture Principles**: Must adhere to dependency rules
-- **Cross-Platform Support**: Must run on Windows, macOS, and Linux
+### Migration Strategy
+- **Code-First Migrations**: Using EF Core migrations
+- **Migration Worker**: For automated deployment migrations
+- **Separate Migration Projects**: For identity and application databases
 
-### Authentication Constraints
-- **Dual Provider Support**: Must support both EF Core Identity and Microsoft Entra ID
-- **Common Interface**: All identity operations must go through abstraction layer
-- **Separate Storage**: Identity and application data must be stored separately
+## Authentication Configuration
 
-### Database Constraints
-- **Provider Agnostic**: Core logic must not depend on specific database provider
-- **Migration Support**: Must support automated and manual migrations
-- **Performance**: Must follow EF Core best practices for performance
+### EF Core Identity Configuration
+- **User and Role Classes**: ApplicationUser and ApplicationRole
+- **Password Policies**: Configurable password requirements
+- **Token Providers**: For email confirmation, password reset, etc.
+- **Cookie Authentication**: For web applications
+- **JWT Authentication**: For APIs
 
-### Security Constraints
-- **HTTPS Enforcement**: All communication must be over HTTPS
-- **Token Security**: JWT tokens must follow security best practices
-- **Password Policies**: Strong password policies for EF Core Identity
-- **CSRF Protection**: Must implement anti-forgery protection
-- **XSS Prevention**: Must sanitize user input and implement CSP
+### Microsoft Entra ID Configuration
+- **App Registration**: Required in Azure portal
+- **Authentication Flow**: Authorization code flow with PKCE
+- **Group Claims**: For role-based authorization
+- **Token Validation**: JWT validation parameters
+- **Synchronization Settings**: For user and group synchronization
 
-## Dependencies
+## Development Approach
 
-### NuGet Packages
+### Code Organization
+- **Feature Folders**: Organizing code by feature rather than type
+- **CQRS Separation**: Commands and queries in separate files
+- **Interface Segregation**: Small, focused interfaces
+- **Dependency Injection**: For loose coupling
 
-#### Core Layer
-- **MediatR**
-- **FluentValidation**
-- **AutoMapper**
-
-#### Infrastructure Layer
-- **Microsoft.EntityFrameworkCore**
-- **Microsoft.EntityFrameworkCore.SqlServer**
-- **Npgsql.EntityFrameworkCore.PostgreSQL**
-- **Microsoft.AspNetCore.Identity.EntityFrameworkCore**
-- **Microsoft.Identity.Web**
-
-#### Presentation Layer
-- **Microsoft.AspNetCore.Authentication.JwtBearer**
-- **Microsoft.AspNetCore.Components.Web**
-- **Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore**
-
-#### Testing
-- **xUnit**
-- **Moq**
-- **FluentAssertions**
-- **Microsoft.EntityFrameworkCore.InMemory**
-
-### External Dependencies
-- **SQL Server** or **PostgreSQL** database
-- **Microsoft Entra ID** tenant (for cloud identity)
-
-## Tool Usage Patterns
-
-### Entity Framework Core
-- **Code-First Approach**: Domain entities define database schema
-- **Migrations**: Generated and applied through dedicated worker
-- **Repository Pattern**: Abstracts EF Core implementation details
-- **Soft Delete**: Entities implement ISoftDelete for logical deletion
-
-### Identity Management
-- **User Management**: Through abstracted IUserService
-- **Role-Based Authorization**: Consistent across both identity providers
-- **Claims-Based Authorization**: For fine-grained permissions
-- **Token Handling**: JWT generation and validation
-
-### API Development
-- **RESTful Principles**: Resource-based API design
-- **CQRS Pattern**: Commands for writes, queries for reads
-- **Validation Pipeline**: Request validation using FluentValidation
-- **Error Handling**: Consistent error responses with problem details
+### Coding Standards
+- **C# Coding Conventions**: Following Microsoft guidelines
+- **Nullable Reference Types**: Enabled for all projects
+- **Async/Await**: Used consistently for asynchronous operations
+- **XML Documentation**: For public APIs and interfaces
 
 ### Testing Strategy
-- **Unit Tests**: For domain and application logic
-- **Integration Tests**: For infrastructure and API endpoints
-- **Test Data Builders**: For creating test entities
-- **In-Memory Database**: For repository testing
+- **Unit Tests**: For business logic and application services
+- **Integration Tests**: For repositories and API endpoints
+- **Test Data Builders**: For creating test data
+- **Mock Objects**: For isolating dependencies
 
-### Logging and Monitoring
-- **Structured Logging**: Using Serilog
-- **Application Insights**: For production monitoring
-- **Health Checks**: Endpoint for monitoring service health
-- **Correlation IDs**: For request tracking across components
+### Error Handling
+- **Global Exception Handling**: Middleware for API exceptions
+- **Structured Error Responses**: Consistent error format
+- **Logging**: Using built-in logging framework
+- **Validation Errors**: Returned as 400 Bad Request with details
 
-## Development Workflow
+## Deployment Considerations
 
-### Feature Development
-1. Define domain entities and interfaces
-2. Implement application logic (commands/queries)
-3. Create infrastructure implementations
-4. Expose functionality through API/UI
-5. Write tests at each layer
+### Docker Support
+- **Dockerfile**: For containerization
+- **Docker Compose**: For local multi-container setup
+- **Environment Variables**: For container configuration
 
-### Database Changes
-1. Modify domain entities
-2. Generate migration using EF Core tools
-3. Test migration locally
-4. Apply migration through worker or startup
+### CI/CD Pipeline
+- **Build**: Compile and run tests
+- **Package**: Create deployment artifacts
+- **Deploy**: Deploy to target environment
+- **Verify**: Run smoke tests
 
-### Authentication Integration
-1. Configure identity provider in settings
-2. Implement provider-specific service
-3. Register service with dependency injection
-4. Use ICurrentUserService in application logic
+### Environment Configuration
+- **Development**: Local development environment
+- **Testing**: For automated tests
+- **Staging**: Pre-production environment
+- **Production**: Live environment
+
+### Monitoring and Diagnostics
+- **Logging**: Structured logging with Serilog
+- **Health Checks**: Endpoint for monitoring
+- **Metrics**: For performance monitoring
+- **Tracing**: For request tracking

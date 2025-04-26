@@ -2,111 +2,86 @@
 
 ## Why This Project Exists
 
-This project addresses several key challenges in modern .NET application development:
+This project addresses several key challenges faced by development teams when starting new enterprise applications:
 
-1. **Reducing Setup Time**: Developers often spend significant time setting up the initial architecture and authentication for new projects. This template eliminates that overhead.
+1. **Architecture Consistency**: Many projects suffer from inconsistent architecture that becomes difficult to maintain as the application grows. This template enforces Clean Architecture principles from the start.
 
-2. **Standardizing Architecture**: Organizations need consistent architectural patterns across projects. This template enforces Clean Architecture principles from the start.
+2. **Authentication Complexity**: Implementing secure authentication is complex and time-consuming. Teams often need to support both local and cloud-based identity providers, requiring significant expertise.
 
-3. **Authentication Flexibility**: Projects may require different authentication approaches based on deployment scenarios (on-premises vs. cloud). This template supports both local and cloud-based identity management.
+3. **Authorization Challenges**: Building fine-grained permission systems is frequently overlooked or implemented inconsistently, leading to security vulnerabilities or inflexible access control.
 
-4. **Separation of Concerns**: Many applications struggle with tight coupling between identity and application logic. This template enforces clear separation.
+4. **Technical Debt**: Without a solid foundation, projects accumulate technical debt as they evolve, making maintenance increasingly difficult and costly.
 
-## Problems It Solves
+5. **Onboarding Friction**: New team members face steep learning curves when joining projects with unclear architecture or inconsistent patterns.
+
+## Problems This Template Solves
 
 ### For Developers
-- Eliminates boilerplate code for authentication and authorization
-- Provides a well-structured starting point with clear separation of concerns
-- Reduces the learning curve for implementing secure authentication
-- Offers flexibility to choose between identity providers without architectural changes
+- Eliminates the need to build authentication and authorization systems from scratch
+- Provides a consistent, well-structured architecture that scales with application complexity
+- Reduces time spent on infrastructure concerns, allowing focus on business logic
+- Offers clear patterns for implementing domain models and application services
 
 ### For IT Managers
-- Ensures consistent implementation of security best practices
-- Simplifies deployment with configurable database providers
-- Provides enterprise-grade architecture suitable for various organizational needs
-- Reduces technical debt through proper architectural foundations
-
-### For Organizations
-- Accelerates time-to-market for new applications
-- Ensures compliance with security standards through built-in best practices
+- Ensures applications follow enterprise security standards
+- Provides flexibility to adapt to organizational identity management strategies
 - Reduces maintenance costs through consistent architecture
-- Facilitates knowledge transfer between projects due to standardized structure
+- Supports both on-premises and cloud deployment scenarios
 
-## How It Should Work
+### For System Administrators
+- Simplifies configuration and deployment through admin setup UI
+- Offers flexible database provider options to match organizational infrastructure
+- Provides clear separation between identity and application data
+- Supports environment variable configuration for containerized deployments
 
-### Authentication Flow
-
-1. **EF Core Identity Path**:
-   - Users authenticate via local login endpoints
-   - Credentials are validated against the identity database
-   - Upon successful authentication, a token is issued
-   - Application uses ICurrentUserService to access user information
-
-2. **Microsoft Entra ID Path**:
-   - Users are redirected to Azure AD for authentication
-   - Azure AD handles credential validation
-   - Upon successful authentication, a token is returned
-   - Application uses ICurrentUserService to access user information
-
-### Configuration Experience
-
-1. **Initial Setup**:
-   - Admin setup UI appears on first launch if no configuration exists
-   - Administrator selects database provider and identity provider
-   - Administrator configures connection strings
-   - System applies configuration and performs initial migrations
-
-2. **Developer Experience**:
-   - Clone template repository
-   - Run the application with default settings or customize via UI
-   - Begin implementing domain-specific functionality
-   - Leverage ICurrentUserService for user context in domain operations
-
-3. **Deployment Experience**:
-   - Configure environment variables or use admin UI
-   - Deploy via Docker or traditional hosting
-   - Migration worker handles database setup
-   - Application runs with selected identity provider
+### For Business Systems Analysts
+- Enables role and permission configuration without code changes
+- Provides a consistent model for user and role management across applications
+- Supports mapping to existing organizational roles and security groups
 
 ## User Experience Goals
 
-### For Administrators
-- Intuitive setup process with clear configuration options
-- Flexibility to choose appropriate database and identity providers
-- Ability to modify configuration post-setup
-- Clear documentation on security implications of different choices
+### Developer Experience
+- **Intuitive Structure**: Clear organization of code following Clean Architecture principles
+- **Minimal Boilerplate**: Common patterns implemented so developers can focus on business logic
+- **Flexibility**: Support for different database providers and authentication mechanisms
+- **Testability**: Architecture designed for effective unit and integration testing
 
-### For Developers
-- Minimal friction when starting new projects
-- Clear architecture that guides proper implementation
-- Consistent patterns for accessing user information
-- Comprehensive examples for common authentication scenarios
-- Seamless integration of user context into domain models
+### Administrator Experience
+- **Simple Setup**: Admin UI for initial configuration of databases and identity providers
+- **Clear Configuration**: Well-documented options for customizing the template
+- **Deployment Flexibility**: Support for various deployment scenarios (Docker, traditional hosting)
+- **Security Management**: Interfaces for managing roles, permissions, and user access
 
-### For End Users
-- Secure authentication experience
-- Consistent login flow regardless of underlying provider
-- Appropriate session management
-- Proper authorization controls
+## Deployment and Usage Scenarios
 
-## Target Scenarios
+### Scenario 1: Small Team, Local Development
+A small development team uses the template with EF Core Identity and SQL Server for a departmental application. They appreciate the clean architecture and built-in authentication, allowing them to focus on business features.
 
-1. **Enterprise Applications**:
-   - Integration with existing Microsoft Entra ID
-   - Role-based access control
-   - Departmental data isolation
+### Scenario 2: Enterprise Integration
+An enterprise IT department uses the template with Microsoft Entra ID integration, connecting to existing security groups for authorization. They configure the template to use their standard PostgreSQL database infrastructure.
 
-2. **SaaS Applications**:
-   - Local identity management with EF Core Identity
-   - Multi-tenancy support
-   - User self-registration
+### Scenario 3: SaaS Application
+A software company uses the template as the foundation for a multi-tenant SaaS application, leveraging the clean architecture to implement tenant isolation and the flexible authentication to support both local accounts and enterprise SSO.
 
-3. **Internal Tools**:
-   - Quick setup with default configurations
-   - Integration with organizational identity
-   - Simplified deployment
+### Scenario 4: Modernization Project
+A team modernizing a legacy application uses the template to establish a solid architectural foundation, gradually migrating features while immediately benefiting from modern authentication and authorization.
 
-4. **Proof of Concept Projects**:
-   - Rapid initialization
-   - Default settings for quick starts
-   - Easy transition to production-ready architecture
+## Target Audience
+
+1. **.NET Developers**: Building enterprise applications requiring robust architecture and security
+2. **IT Managers**: Responsible for application security and maintenance strategies
+3. **System Administrators**: Configuring and deploying applications in enterprise environments
+4. **Business Systems Analysts**: Defining role and permission requirements for applications
+
+## Value Proposition
+
+This template provides immediate value by:
+
+1. **Reducing Development Time**: Eliminating the need to implement common architectural patterns and authentication systems
+2. **Improving Security**: Ensuring authentication and authorization follow best practices
+3. **Enhancing Maintainability**: Establishing clear separation of concerns from the start
+4. **Enabling Flexibility**: Supporting various authentication providers and database technologies
+5. **Facilitating Collaboration**: Providing a consistent structure that team members can easily understand
+
+By addressing these core needs, the template allows teams to deliver secure, maintainable applications faster and with higher quality.

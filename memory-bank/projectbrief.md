@@ -1,26 +1,37 @@
 # Project Brief: Clean Architecture Template with Authentication
 
-## Overview
-This project delivers a reusable C# solution template based on Clean Architecture principles, featuring integrated dual authentication support using EF Core Identity and Microsoft Entra ID (formerly Azure AD). The template enables developers to rapidly initiate new applications with enterprise-grade architecture and security, while offering flexibility for various deployment and configuration needs.
+## Project Purpose
 
-## Core Requirements
+This project aims to deliver a reusable C# solution template based on Clean Architecture principles, featuring integrated dual authentication support using EF Core Identity and Microsoft Entra ID (formerly Azure AD). The template enables developers to rapidly initiate new applications with enterprise-grade architecture and security, while offering flexibility for various deployment and configuration needs.
 
-### Authentication
-- Dual authentication options: EF Core Identity and Microsoft Entra ID
-- Distinct separation of identity and application data storage
-- Common interface abstraction (ICurrentUserService)
+## Key Features
 
-### Architecture
-- Clean Architecture with well-defined separation of concerns
-- Modular design to facilitate customization and scalability
-- Support for multiple database providers (e.g., SQL Server, PostgreSQL)
-
-### User Experience
-- Admin setup UI for streamlined initial configuration
-- Simplified developer onboarding
-- Flexible deployment options
+- **Dual Authentication Options**: 
+  - EF Core Identity for local identity management
+  - Microsoft Entra ID for cloud-based identity management
+  
+- **Clean Architecture Implementation**:
+  - Clear separation of concerns across layers
+  - Domain-driven design principles
+  - CQRS pattern with MediatR
+  
+- **Identity Management**:
+  - Distinct separation of identity and application data storage
+  - Provider-agnostic UserAccount entity in domain model
+  - Role and permission-based authorization system
+  
+- **Flexibility and Modularity**:
+  - Support for multiple database providers (SQL Server, PostgreSQL)
+  - Configurable authentication providers
+  - Modular design for customization and scalability
+  
+- **Admin Setup and Configuration**:
+  - Admin setup UI for streamlined initial configuration
+  - Environment variable configuration for deployment scenarios
+  - Role mapping and permission management
 
 ## Solution Structure
+
 ```
 Solution 'Clean Architecture Template Projects'
 ├── aspire
@@ -51,24 +62,38 @@ Solution 'Clean Architecture Template Projects'
         └── CleanArchitectureTemplate.Web.Tests
 ```
 
-## Deliverables
-- Full solution template with all projects and layers
-- Mechanism for selecting authentication providers
-- EF Core Identity implementation with UI
-- Microsoft Entra ID integration
-- Features for user and role management
-- Configuration files for the template
-- Comprehensive documentation and examples
-- Test coverage across all components
+## Core Deliverables
 
-## Development Approach
-The development will proceed iteratively, emphasizing:
-- Initial focus on EF Core Identity implementation
-- Use of GitHub Copilot for code generation
-- Adherence to standard ASP.NET Core Identity interfaces
-- Compliance with official ASP.NET Core security guidelines
-- Test-driven development for security-critical components
-- Integration of Microsoft Entra ID following EF Core Identity completion
+1. **Complete Solution Template**:
+   - Full project structure with all layers implemented
+   - Ready-to-use template for new applications
+
+2. **Authentication System**:
+   - Dual provider support (EF Core Identity and Microsoft Entra ID)
+   - Common interface for authentication services
+   - Provider-agnostic domain model for users and roles
+
+3. **Authorization System**:
+   - Permission-based authorization
+   - Role management and synchronization
+   - Integration with ASP.NET Core authorization
+
+4. **Configuration and Setup**:
+   - Admin UI for initial configuration
+   - Database provider selection
+   - Identity provider configuration
+
+5. **Documentation and Examples**:
+   - Comprehensive documentation
+   - Usage examples for different scenarios
+   - Test coverage across all components
 
 ## Project Scope
-This template is designed to serve as a foundation for enterprise applications requiring robust authentication, while maintaining flexibility for various deployment scenarios. It balances enterprise requirements with simplicity for smaller projects.
+
+The template is designed to serve as a foundation for enterprise applications requiring:
+- Robust authentication and authorization
+- Clean, maintainable architecture
+- Flexibility in deployment and configuration
+- Scalability for growing applications
+
+The project focuses on providing a solid architectural foundation while allowing for customization to meet specific application needs.

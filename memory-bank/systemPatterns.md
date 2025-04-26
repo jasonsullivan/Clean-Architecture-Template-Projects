@@ -1,204 +1,192 @@
 # System Patterns: Clean Architecture Template with Authentication
 
-## System Architecture
+## Clean Architecture Implementation
 
-This template implements Clean Architecture, a design philosophy that emphasizes separation of concerns and dependency rules. The architecture is organized into concentric layers:
+This template implements Clean Architecture principles with a clear separation of concerns across the following layers:
 
-### Core Layers (Inner)
+### Core Layer
+- **Domain Layer** (`CleanArchitectureTemplate.Domain`):
+  - Contains enterprise-wide business rules and entities
+  - Defines domain models, value objects, and domain events
+  - Has no dependencies on other layers or external frameworks
+  - Includes the provider-agnostic UserAccount and ApplicationRole entities
 
-1. **Domain Layer** (`CleanArchitectureTemplate.Domain`)
-   - Contains enterprise-wide business rules and entities
-   - Has no dependencies on other layers or external frameworks
-   - Defines core domain models, value objects, and domain events
-   - Establishes repository interfaces for data access
+- **Application Layer** (`CleanArchitectureTemplate.Application`):
+  - Implements application-specific business rules
+  - Contains interfaces for infrastructure services (repositories, identity services)
+  - Implements CQRS pattern using MediatR for commands and queries
+  - Includes validation, authorization, and business logic
 
-2. **Application Layer** (`CleanArchitectureTemplate.Application`)
-   - Contains application-specific business rules
-   - Orchestrates the flow of data to and from domain entities
-   - Implements use cases through services and commands/queries
-   - Depends only on the Domain layer
-   - Defines interfaces that are implemented by outer layers
+### Infrastructure Layer
+- **Data Access** (`CleanArchitectureTemplate.Infrastructure`):
+  - Implements repository interfaces defined in the Application layer
+  - Contains database context, entity configurations, and migrations
+  - Handles data persistence and retrieval
+  - Implements the Unit of Work pattern
 
-### Infrastructure Layers (Outer)
+- **Identity Providers**:
+  - **EF Core Identity** (`CleanArchitectureTemplate.Infrastructure.Identity.EFCore`):
+    - Implements local identity management using ASP.NET Core Identity
+    - Maps between ApplicationUser and domain UserAccount entities
+  
+  - **Microsoft Entra ID** (`CleanArchitectureTemplate.Infrastructure.Identity.AzureAD`):
+    - Implements cloud-based identity using Microsoft.Identity.Web
+    - Synchronizes user data and security groups with domain entities
 
-3. **Infrastructure Layer** (`CleanArchitectureTemplate.Infrastructure`)
-   - Implements interfaces defined in the Application layer
-   - Contains data access implementations, external service integrations
-   - Manages database contexts and repositories
-   - Handles cross-cutting concerns like logging and caching
+- **Migration Worker** (`CleanArchitectureTemplate.Infrastructure.MigrationWorker`):
+  - Handles database migrations for deployment scenarios
+  - Supports different database providers
 
-4. **Identity Infrastructure Layers**
-   - **EF Core Identity** (`CleanArchitectureTemplate.Infrastructure.Identity.EFCore`)
-     - Implements local identity management using Entity Framework Core
-     - Manages users, roles, and claims
-   
-   - **Azure AD Identity** (`CleanArchitectureTemplate.Infrastructure.Identity.AzureAD`)
-     - Implements cloud-based identity management via Microsoft Entra ID
-     - Handles token validation and user information retrieval
+### Presentation Layer
+- **API** (`CleanArchitectureTemplate.API`):
+  - Exposes RESTful endpoints for application functionality
+  - Handles authentication and authorization
+  - Maps between API models and application DTOs
 
-5. **Migration Worker** (`CleanArchitectureTemplate.Infrastructure.MigrationWorker`)
-   - Handles database migrations for both identity and application databases
-   - Runs as a separate process during deployment or setup
-
-### Presentation Layers
-
-6. **API Layer** (`CleanArchitectureTemplate.API`)
-   - Exposes application functionality through RESTful endpoints
-   - Handles HTTP requests and responses
-   - Manages authentication and authorization at the API level
-
-7. **Web Layer** (`CleanArchitectureTemplate.Web`)
-   - Provides user interface for the application
-   - Includes admin setup UI for configuration
-   - Implements user authentication flows
+- **Web UI** (`CleanArchitectureTemplate.Web`):
+  - Provides user interface for the application
+  - Includes admin setup UI for configuration
+  - Implements role and permission management interfaces
 
 ### Shared Layer
+- **Shared** (`CleanArchitectureTemplate.Shared`):
+  - Contains cross-cutting concerns and utilities
+  - Defines constants and enumerations used across layers
+  - Includes shared DTOs for communication between API and Web UI
 
-8. **Shared Layer** (`CleanArchitectureTemplate.Shared`)
-   - Contains DTOs and models shared between layers
-   - Includes utilities and helpers used across the application
-   - Defines constants and enumerations
+## Authentication Architecture
 
-## Key Technical Decisions
+The template supports two authentication providers through a common abstraction:
 
-### Authentication Architecture
+### Common Authentication Interface
+- **ICurrentUserService**: Provides access to the current user's information
+- **IIdentityService**: Handles user management operations
+- **Factory Pattern**: Selects the appropriate identity provider based on configuration
 
-1. **Dual Provider Support**
-   - Both EF Core Identity and Microsoft Entra ID are supported
-   - Selection is made at configuration time
-   - Common interfaces abstract provider-specific details
+### EF Core Identity Implementation
+- Uses ApplicationUser class (inherits from IdentityUser) in the Identity layer
+- Uses ApplicationRole class (inherits from IdentityRole) for roles
+- Maps to domain UserAccount and ApplicationRole entities
+- Stores identity data in a separate database from application data
 
-2. **Identity Data Separation**
-   - Identity data is stored separately from application data
-   - EF Core Identity uses a dedicated identity database
-   - Microsoft Entra ID stores identity in the cloud
-
-3. **User Context Abstraction**
-   - `ICurrentUserService` provides a unified interface for user information
-   - Implementation varies based on the selected identity provider
-   - Application code remains unchanged regardless of provider
-
-### Database Architecture
-
-1. **Multiple Database Support**
-   - Template supports various database providers (SQL Server, PostgreSQL)
-   - Provider selection is made at configuration time
-   - Entity Framework Core is used for data access
-
-2. **Separate Contexts**
-   - `IdentityDbContext` manages identity data (for EF Core Identity)
-   - `ApplicationDbContext` manages application-specific data
-   - Contexts can use different database providers if needed
-
-3. **Migration Strategy**
-   - Migrations are handled by a dedicated worker
-   - Supports both automatic and manual migration application
-   - Ensures database schema matches application requirements
-
-## Design Patterns in Use
-
-### Architectural Patterns
-
-1. **Clean Architecture**
-   - Separation of concerns through layers
-   - Dependency rule: inner layers know nothing about outer layers
-   - Use of interfaces to maintain the dependency rule
-
-2. **CQRS (Command Query Responsibility Segregation)**
-   - Commands for state changes
-   - Queries for data retrieval
-   - Implemented using MediatR
-
-3. **Dependency Injection**
-   - Services are registered with the DI container
-   - Dependencies are injected rather than created
-   - Facilitates testing and loose coupling
-
-### Design Patterns
-
-1. **Repository Pattern**
-   - Abstracts data access logic
-   - Defined in Domain layer, implemented in Infrastructure
-   - Provides collection-like interface for domain entities
-
-2. **Unit of Work**
-   - Coordinates operations across multiple repositories
-   - Ensures transactional consistency
-   - Implemented in Infrastructure layer
-
-3. **Factory Pattern**
-   - Used for identity provider selection
-   - Creates appropriate implementation based on configuration
-   - Abstracts creation logic from consumers
-
-4. **Strategy Pattern**
-   - Applied to authentication logic
-   - Different strategies for different identity providers
-   - Common interface for all strategies
-
-5. **Mediator Pattern**
-   - Implemented using MediatR
-   - Decouples request senders from handlers
-   - Supports pipeline behaviors for cross-cutting concerns
-
-## Component Relationships
+### Microsoft Entra ID Implementation
+- Integrates with Azure AD through Microsoft.Identity.Web
+- Synchronizes user data and security groups to local domain entities
+- Provides filtering and mapping for security groups
+- Stores only application data locally (identity data in cloud)
 
 ### Authentication Flow
+1. **Authentication**:
+   - EF Core Identity: Users authenticate via local login endpoints
+   - Microsoft Entra ID: Users are redirected to Azure AD for authentication
+2. **Token Validation**:
+   - API validates tokens and retrieves user details
+3. **User Access**:
+   - Application uses ICurrentUserService to access user information
 
-```
-User -> Web/API -> Identity Provider -> ICurrentUserService -> Application Services -> Domain Logic
-```
+## Database Architecture
 
-1. User initiates authentication through Web or API
-2. Request is routed to appropriate identity provider
-3. Upon successful authentication, user information is available via ICurrentUserService
-4. Application services use ICurrentUserService for user context
-5. Domain logic receives user information as needed
+The template separates identity and application data:
 
-### Configuration Flow
+### Database Contexts
+- **IdentityDbContext**: Stores identity data for EF Core Identity
+- **ApplicationDbContext**: Stores domain entities and application data
 
-```
-Admin -> Setup UI -> Configuration Service -> Database/Identity Configuration -> Application Startup
-```
+### User Data Architecture
+- **Domain Layer Entities**:
+  - **UserAccount**: Domain representation of a user, independent of authentication provider
+  - **ApplicationRole**: Domain representation of a role or security group
+  - **UserRole**: Join entity for the many-to-many relationship between users and roles
+  - **Permission**: Fine-grained access control entity
+  - **RolePermission**: Join entity mapping permissions to roles
 
-1. Administrator accesses setup UI
-2. Configuration choices are submitted to Configuration Service
-3. Service updates configuration settings
-4. Application uses configuration during startup
-5. Appropriate database and identity providers are initialized
+### Provider-Specific Implementations
+- **For EF Core Identity**:
+  - ApplicationUser extends IdentityUser but remains in the infrastructure layer
+  - Mapper transforms ApplicationUser to UserAccount for domain use
+  - Similar mapping for roles (IdentityRole to ApplicationRole)
 
-## Critical Implementation Paths
+- **For Microsoft Entra ID**:
+  - Synchronization mechanisms pull user data from Microsoft Graph API
+  - Security groups are synchronized to ApplicationRole entities
+  - Filtering options determine which groups to include/exclude
 
-### Identity Provider Integration
+### Database Provider Support
+- SQL Server
+- PostgreSQL
+- Configurable through admin setup UI or environment variables
 
-1. **Identity Abstraction Layer**
-   - `ICurrentUserService` interface in Application layer
-   - Provider-specific implementations in Identity layers
-   - Factory for selecting appropriate implementation
+## Authorization System
 
-2. **Authentication Middleware**
-   - Configures authentication based on selected provider
-   - Handles token validation and user information extraction
-   - Populates HttpContext with user details
+The template implements a permission-based authorization system:
 
-3. **User Context Propagation**
-   - User information flows from authentication to application logic
-   - Domain entities capture audit information (e.g., CreatedBy)
-   - Authorization decisions based on user identity and roles
+### Permission Model
+- **Permissions**: Represent specific actions (Create, Read, Update, Delete, Execute)
+- **Scopes**: Permissions can be scoped to specific entities or processes
+- **Roles**: Collections of permissions assigned to users
+- **Claims**: Generated from permissions for ASP.NET Core authorization
 
-### Database Configuration
+### Authorization Flow
+1. **Permission Definition**:
+   - Permissions are defined for entities and operations
+   - Permissions are grouped into roles
+2. **Role Assignment**:
+   - Users are assigned to roles (directly or via security groups)
+3. **Permission Checks**:
+   - Application services check permissions before operations
+   - API controllers use authorization attributes
+4. **Claims-Based Authorization**:
+   - Permissions are converted to claims
+   - ASP.NET Core authorization handlers validate claims
 
-1. **Provider Selection**
-   - Configuration determines database provider
-   - Entity Framework Core provider registration
-   - Connection string management
+## Key Design Patterns
 
-2. **Migration Application**
-   - Migration worker detects schema changes
-   - Applies migrations to both identity and application databases
-   - Handles initial seeding of data
+### Repository Pattern
+- Abstracts data access logic
+- Defined in Application layer, implemented in Infrastructure
+- Enables testability and separation from database implementation
 
-3. **Repository Implementation**
-   - Generic repository pattern implementation
-   - Specific repositories for domain entities
-   - Query specifications for complex queries
+### Unit of Work Pattern
+- Coordinates transactions across repositories
+- Ensures data consistency
+- Implemented in Infrastructure layer
+
+### CQRS Pattern
+- Separates read and write operations
+- Commands modify state, queries retrieve data
+- Implemented using MediatR
+
+### Mediator Pattern
+- Decouples request handlers from controllers
+- Enables cross-cutting concerns (validation, logging, authorization)
+- Implemented using MediatR
+
+### Factory Pattern
+- Selects appropriate identity provider based on configuration
+- Creates concrete implementations of identity interfaces
+
+### Strategy Pattern
+- Implements different authentication strategies
+- Allows switching between identity providers without changing application code
+
+### Mapper Pattern
+- Maps between infrastructure entities and domain entities
+- Keeps domain model clean from infrastructure concerns
+
+## Configuration and Setup
+
+### Admin Setup UI
+- Provides interface for initial configuration
+- Configures database providers and connection strings
+- Sets up identity provider selection
+- Manages role and permission definitions
+
+### Configuration Options
+- Settings stored in appsettings.json
+- Environment variables for deployment scenarios
+- In-memory configuration for testing
+
+### Deployment Support
+- Docker container configuration
+- Traditional hosting options
+- Environment-specific settings

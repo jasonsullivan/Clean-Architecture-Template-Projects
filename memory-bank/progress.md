@@ -2,198 +2,151 @@
 
 ## Current Status
 
-**Project Phase**: Initial Setup
+**Project Phase**: Domain Model Design
 
-The project is in its early stages with the following status:
-
-- **Solution Structure**: ✅ Complete
-- **Project References**: ✅ Complete
-- **Development Plan**: ✅ Complete
-- **Core Domain Implementation**: 🔄 In Progress
-- **Authentication Infrastructure**: 🔄 In Progress
-- **Database Configuration**: 🔄 In Progress
-- **Admin Setup UI**: 🔄 In Progress
-- **EF Core Identity Integration**: ⏳ Not Started
-- **Microsoft Entra ID Integration**: ⏳ Not Started
-- **Testing Framework**: ⏳ Not Started
-- **Documentation**: 🔄 In Progress
+The project has progressed from initial setup to domain model design. The solution structure is in place, and comprehensive documentation of the domain model has been created in the memory bank. The core architecture has been defined, and the domain model has been designed in detail, but implementation of the various components is still pending.
 
 ## What Works
 
-At this early stage, the following components are operational:
+### Solution Structure
+- ✅ Solution created with all necessary projects
+- ✅ Projects organized according to Clean Architecture principles
+- ✅ Project references established between layers
 
-1. **Solution Structure**:
-   - All projects created and organized according to Clean Architecture principles
-   - Project references established following dependency rules
-   - Basic placeholder files added to establish structure
+### Documentation
+- ✅ Memory bank initialized with core documentation files
+- ✅ Development plan created with detailed project scope
+- ✅ Architecture and design decisions documented
+- ✅ Comprehensive domain model documentation created
 
-2. **Development Environment**:
-   - Solution builds successfully
-   - Project dependencies resolved
-   - Basic development tooling configured
+### Domain Model Design
+- ✅ Design of value objects for all primitive types
+- ✅ Design of UserAccount, ApplicationRole, and Permission entities
+- ✅ Definition of aggregate boundaries and relationships
+- ✅ Design of domain events and event handlers
+- ✅ Design of domain services for cross-aggregate operations
+- ✅ Visual representation of the domain model through class diagrams
+
+## What's In Progress
+
+### Documentation
+- 🔄 Detailed documentation of authentication and authorization architecture
+- 🔄 Technical specifications for identity provider integration
+- 🔄 Design documents for admin setup UI
+
+### Domain Model Implementation
+- 🔄 Implementation of value objects
+- 🔄 Implementation of entities and aggregates
+- 🔄 Implementation of domain events and event handlers
 
 ## What's Left to Build
 
-The project has a significant amount of work remaining:
+### Core Layer Implementation
+- ❌ Domain entities and value objects
+- ❌ Repository interfaces
+- ❌ Application services and CQRS handlers
 
-### Phase 1: Core Infrastructure (Current)
+### Infrastructure Layer Implementation
+- ❌ Repository implementations
+- ❌ Database contexts and configurations
+- ❌ EF Core Identity provider implementation
+- ❌ Microsoft Entra ID provider implementation
+- ❌ Migration worker for database setup
 
-1. **Domain Layer**:
-   - Base entity classes with audit properties
-   - Repository interfaces
-   - Domain events and handlers
-   - Value objects for common concepts
+### Presentation Layer Implementation
+- ❌ API controllers and endpoints
+- ❌ Web UI components
+- ❌ Admin setup interface
+- ❌ Role and permission management UI
 
-2. **Application Layer**:
-   - CQRS infrastructure (commands, queries, handlers)
-   - Service interfaces
-   - Validation pipeline
-   - Cross-cutting concerns (logging, caching)
+### Authentication and Authorization
+- ❌ Authentication flows for both providers
+- ❌ Token validation and generation
+- ❌ Permission-based authorization handlers
+- ❌ Role synchronization mechanisms
 
-3. **Infrastructure Layer**:
-   - Database contexts (identity and application)
-   - Repository implementations
-   - Unit of work pattern
-   - External service integrations
+### Testing
+- ❌ Unit tests for domain and application logic
+- ❌ Integration tests for repositories
+- ❌ API endpoint tests
+- ❌ Authentication and authorization tests
 
-4. **Identity Abstraction**:
-   - Current user service interface
-   - Identity provider factory
-   - Authentication configuration
+### Deployment and CI/CD
+- ❌ Docker support
+- ❌ GitHub Actions workflows
+- ❌ Deployment documentation
 
-### Phase 2: EF Core Identity Implementation
+## Known Issues and Challenges
 
-1. **Identity Database**:
-   - IdentityDbContext configuration
-   - Identity entity configurations
-   - Migrations setup
+### Technical Challenges
+1. **Authentication Provider Abstraction**: Creating a clean abstraction for different authentication providers while maintaining flexibility.
+2. **Permission System Performance**: Ensuring the permission-based authorization system performs well with complex permission hierarchies.
+3. **Database Provider Support**: Supporting multiple database providers with different SQL dialects and features.
 
-2. **Identity Services**:
-   - User management
-   - Role management
-   - Token generation and validation
-   - Password policies
-
-3. **Identity UI**:
-   - Login/logout flows
-   - User registration
-   - Password reset
-   - Profile management
-
-### Phase 3: Microsoft Entra ID Integration
-
-1. **Azure AD Configuration**:
-   - App registration setup
-   - Token validation
-   - Claims mapping
-
-2. **Integration Services**:
-   - Microsoft Entra ID-specific implementation of identity interfaces
-   - Graph API integration for user information
-   - Role mapping between Azure AD and application
-
-### Phase 4: Admin Setup UI
-
-1. **Configuration Interface**:
-   - Database provider selection
-   - Identity provider selection
-   - Connection string management
-   - Initial setup wizard
-
-2. **Configuration Storage**:
-   - Settings persistence
-   - Environment variable integration
-   - Configuration precedence rules
-
-### Phase 5: Testing and Documentation
-
-1. **Testing**:
-   - Unit tests for all layers
-   - Integration tests for infrastructure
-   - End-to-end tests for critical flows
-
-2. **Documentation**:
-   - API documentation
-   - Setup and configuration guide
-   - Developer guide
-   - Security considerations
-
-## Known Issues
-
-As the project is in its initial stages, there are several challenges and open issues:
-
-1. **Architecture Complexity**:
-   - The abstraction required for dual authentication providers adds complexity
-   - Need to ensure the abstraction doesn't impact performance or maintainability
-
-2. **Database Separation**:
-   - Managing separate databases for identity and application data requires careful coordination
-   - Need to establish patterns for cross-database operations
-
-3. **Configuration Management**:
-   - Balancing flexibility with simplicity for configuration options
-   - Ensuring secure storage of sensitive configuration data
-
-4. **Testing Strategy**:
-   - Need to establish patterns for testing with different identity providers
-   - Integration testing with Microsoft Entra ID requires special consideration
+### Open Questions
+1. **Synchronization Strategy**: Determining the best approach for synchronizing Microsoft Entra ID users and groups.
+2. **Migration Approach**: Deciding on the strategy for handling database migrations across different providers.
+3. **Configuration Complexity**: Balancing flexibility with simplicity in configuration options.
 
 ## Evolution of Project Decisions
 
-As the project progresses, several key decisions have been made or refined:
+### Initial Decisions
+- **Clean Architecture**: Decision to use Clean Architecture for clear separation of concerns.
+- **Dual Authentication**: Decision to support both EF Core Identity and Microsoft Entra ID.
+- **Separate Databases**: Decision to separate identity and application data.
 
-### Initial Architecture Decisions
+### Refined Decisions
+- **UserAccount Entity**: Creation of a provider-agnostic domain entity for users.
+- **Permission Model**: Implementation of a fine-grained permission system for authorization.
+- **Admin Setup UI**: Addition of a configuration interface for initial setup.
 
-1. **Clean Architecture Adoption**:
-   - **Initial Decision**: Adopt Clean Architecture for clear separation of concerns
-   - **Current Status**: Maintained, with project structure reflecting the layers
-   - **Rationale**: Provides clear boundaries and facilitates testing and maintenance
+## Next Milestones
 
-2. **Dual Authentication Support**:
-   - **Initial Decision**: Support both EF Core Identity and Microsoft Entra ID
-   - **Current Status**: Maintained, with abstraction layer planned
-   - **Rationale**: Provides flexibility for different deployment scenarios
+### Milestone 1: Core Domain Implementation
+- Define and implement domain entities
+- Create repository interfaces
+- Implement basic validation rules
 
-3. **Database Separation**:
-   - **Initial Decision**: Separate databases for identity and application data
-   - **Current Status**: Maintained, with separate contexts planned
-   - **Rationale**: Cleaner separation of concerns and different scaling needs
+**Target Completion**: [Date TBD]
 
-### Refined Approaches
+### Milestone 2: Infrastructure Layer
+- Implement repository implementations
+- Create database contexts
+- Set up entity configurations
+- Implement EF Core Identity provider
 
-1. **Implementation Sequence**:
-   - **Initial Approach**: Implement both identity providers simultaneously
-   - **Refined Approach**: Implement EF Core Identity first, then add Microsoft Entra ID
-   - **Rationale**: Simplifies initial development and testing
+**Target Completion**: [Date TBD]
 
-2. **Configuration Strategy**:
-   - **Initial Approach**: Configuration primarily through code
-   - **Refined Approach**: Combination of admin UI and environment variables
-   - **Rationale**: Provides more flexibility for different deployment scenarios
+### Milestone 3: Authentication System
+- Implement authentication flows
+- Create token services
+- Set up user registration and login
+- Implement Microsoft Entra ID provider
 
-3. **Project Organization**:
-   - **Initial Approach**: Strict layer-based organization
-   - **Refined Approach**: Layer-based with feature organization within layers
-   - **Rationale**: Balances architectural clarity with developer productivity
+**Target Completion**: [Date TBD]
 
-## Milestone Tracking
+### Milestone 4: Authorization System
+- Implement permission-based authorization
+- Create role management
+- Set up authorization handlers
+- Implement security group synchronization
 
-| Milestone | Target Completion | Status | Notes |
-|-----------|-------------------|--------|-------|
-| Solution Setup | Completed | ✅ | Basic structure and references |
-| Domain Layer | Week 1 | 🔄 | Core entities and interfaces |
-| Application Layer | Week 2 | ⏳ | CQRS and service interfaces |
-| Infrastructure Layer | Week 3 | ⏳ | Database and repository implementation |
-| EF Core Identity | Week 4-5 | ⏳ | Local identity provider |
-| Admin Setup UI | Week 6 | ⏳ | Configuration interface |
-| Microsoft Entra ID | Week 7-8 | ⏳ | Cloud identity provider |
-| Testing | Throughout | ⏳ | Unit and integration tests |
-| Documentation | Throughout | 🔄 | Developer and user guides |
+**Target Completion**: [Date TBD]
 
-## Next Immediate Tasks
+### Milestone 5: Admin UI and Configuration
+- Design and implement admin setup UI
+- Create configuration options
+- Implement database provider selection
+- Set up identity provider configuration
 
-1. Implement base entity classes with audit properties
-2. Create ICurrentUserService interface and factory
-3. Set up ApplicationDbContext and IdentityDbContext
-4. Implement repository pattern for data access
-5. Create initial admin setup UI wireframes
+**Target Completion**: [Date TBD]
+
+## Lessons Learned
+
+As the project is in its early stages, specific lessons learned are still emerging. However, some initial insights include:
+
+1. **Architecture Importance**: The importance of establishing a clear architecture before implementation begins.
+2. **Documentation Value**: The value of comprehensive documentation for complex systems.
+3. **Abstraction Challenges**: The challenges of creating clean abstractions for authentication providers.
+
+These lessons will be expanded as the project progresses and more implementation work is completed.
