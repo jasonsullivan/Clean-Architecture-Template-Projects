@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\CleanArchitectureTemplate.Shared\CleanArchitectureTemplate.Shared.csproj" />
     <ProjectReference Include="..\CleanArchitectureTemplate.Domain\CleanArchitectureTemplate.Domain.csproj" />
   </ItemGroup>
 

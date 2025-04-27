@@ -15,6 +15,5 @@
     <ProjectReference Include="..\..\..\aspire\CleanArchitectureTemplate.ServiceDefaults\CleanArchitectureTemplate.ServiceDefaults.csproj" />
     <ProjectReference Include="..\CleanArchitectureTemplate.Infrastructure\CleanArchitectureTemplate.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Core\CleanArchitectureTemplate.Application\CleanArchitectureTemplate.Application.csproj" />
-    <ProjectReference Include="..\..\Core\CleanArchitectureTemplate.Domain\CleanArchitectureTemplate.Domain.csproj" />
   </ItemGroup>
 </Project>

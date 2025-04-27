@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\CleanArchitectureTemplate.Application\CleanArchitectureTemplate.Application.csproj" />
-    <ProjectReference Include="..\..\Core\CleanArchitectureTemplate.Domain\CleanArchitectureTemplate.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
