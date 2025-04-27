@@ -5,7 +5,7 @@ namespace CleanArchitectureTemplate.Domain.UserAccounts.ValueObjects;
 /// <summary>
 /// Represents a unique identifier for a user account.
 /// </summary>
-public sealed record UserAccountId : UserId<Guid>
+public sealed record UserAccountId : EntityId<Guid>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserAccountId"/> class.
@@ -50,4 +50,3 @@ public sealed record UserAccountId : UserId<Guid>
     /// </returns>
     public static implicit operator UserAccountId(Guid value) => new(value);
 }
-
