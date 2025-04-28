@@ -12,7 +12,16 @@ public sealed partial record Email : ValueObject
     /// <summary>
     /// Gets the email value.
     /// </summary>
-    public string Value { get; init; } = string.Empty;
+    public string Value { get; init; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Email"/> class with the specified email value.
+    /// </summary>
+    /// <param name="value">The email value.</param>
+    private Email(string value)
+    {
+        Value = value;
+    }
 
     /// <summary>
     /// Creates a new <see cref="Email"/> instance after validating the provided email string.
@@ -34,7 +43,7 @@ public sealed partial record Email : ValueObject
             return Result<Email>.Failure(DomainError.Failure("Email", "Invalid email format."));
         }
 
-        return Result<Email>.Success(new Email { Value = value });
+        return Result<Email>.Success(new Email(value));
     }
 
     /// <summary>

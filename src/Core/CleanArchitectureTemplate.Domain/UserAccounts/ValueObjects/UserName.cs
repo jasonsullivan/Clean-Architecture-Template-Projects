@@ -12,7 +12,16 @@ public sealed partial record UserName : ValueObject
     /// <summary>
     /// Gets the username value.
     /// </summary>
-    public string Value { get; init; } = string.Empty;
+    public string Value { get; init; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserName"/> class with the specified value.
+    /// </summary>
+    /// <param name="value">The username value.</param>
+    private UserName(string value)
+    {
+        Value = value;
+    }
 
     /// <summary>
     /// Creates a new <see cref="UserName"/> instance after validating the provided username string.
@@ -36,7 +45,7 @@ public sealed partial record UserName : ValueObject
         {
             return Result<UserName>.Failure(DomainError.Failure("UserName", "UserName can only contain letters, numbers, and underscores."));
         }
-        return Result<UserName>.Success(new UserName { Value = value });
+        return Result<UserName>.Success(new UserName(value));
     }
 
     /// <summary>

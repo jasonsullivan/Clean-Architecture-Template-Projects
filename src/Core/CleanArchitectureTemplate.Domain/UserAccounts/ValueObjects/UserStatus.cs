@@ -5,7 +5,7 @@ namespace CleanArchitectureTemplate.Domain.UserAccounts.ValueObjects;
 /// <summary>
 /// Represents the status of a user account.
 /// </summary>
-public record UserStatus
+public sealed record UserStatus : ValueObject
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="UserStatus"/> record.
@@ -88,4 +88,3 @@ public record UserStatus
     /// </summary>
     public bool IsPendingActivation => string.Equals(Value, PendingActivation.Value, StringComparison.Ordinal);
 }
-
