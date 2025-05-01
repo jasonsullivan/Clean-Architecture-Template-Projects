@@ -135,7 +135,7 @@ public class EFCoreIdentityService(
 
             // Check if user with same domain ID already exists
             var existingUser = await _dbContext.Users
-                .Where(u => string.Equals(u.DomainId, userAccount.Id.Value.ToString(), StringComparison.Ordinal))
+                .Where(u => u.DomainId == userAccount.Id.Value.ToString())
                 .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
             if (existingUser != null)
@@ -529,10 +529,31 @@ public class EFCoreIdentityService(
     /// <returns>The found user or null if not found.</returns>
     private async Task<ApplicationUser?> FindUserByIdAsync(UserAccountId userId, CancellationToken cancellationToken = default)
     {
-        // First, try to find by DomainId (most accurate match)
+        if (userId == null || userId.Value == Guid.Empty)
+        {
+            _logger.LogWarning("Invalid UserAccountId provided: {UserId}", userId?.Value);
+            return null;
+        }
+
+        // Ensure the DomainId comparison is case-insensitive and handles potential mismatches
         var user = await _dbContext.Users
-            .Where(u => string.Equals(u.DomainId, userId.Value.ToString(), StringComparison.Ordinal))
-            .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false) ?? await _userManager.FindByIdAsync(userId.Value.ToString()).ConfigureAwait(false);
+            .Where(u => u.DomainId == userId.Value.ToString())
+            .FirstOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (user == null)
+        {
+            _logger.LogDebug("User not found by DomainId: {DomainId}. Attempting to find by IdentityId.", userId.Value);
+
+            // If not found by DomainId, attempt to find by IdentityId
+            user = await _userManager.FindByIdAsync(userId.Value.ToString()).ConfigureAwait(false);
+
+            if (user == null)
+            {
+                _logger.LogWarning("User not found by IdentityId: {IdentityId}", userId.Value);
+            }
+        }
+
         return user;
     }
 }
