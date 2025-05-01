@@ -12,7 +12,9 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="Moq" />
 		<PackageReference Include="xunit" />
 		<PackageReference Include="xunit.runner.visualstudio">
 			<PrivateAssets>all</PrivateAssets>
@@ -28,6 +30,11 @@
 		<ProjectReference Include="..\..\..\src\Infrastructure\CleanArchitectureTemplate.Infrastructure\CleanArchitectureTemplate.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\..\src\Core\CleanArchitectureTemplate.Application\CleanArchitectureTemplate.Application.csproj" />
 		<ProjectReference Include="..\..\..\src\Core\CleanArchitectureTemplate.Domain\CleanArchitectureTemplate.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Common\" />
+	  <Folder Include="Identity\EFCore\Extensions\" />
 	</ItemGroup>
 
 </Project>

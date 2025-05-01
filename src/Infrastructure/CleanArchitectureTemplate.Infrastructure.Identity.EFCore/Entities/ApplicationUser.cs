@@ -46,4 +46,15 @@ public class ApplicationUser : IdentityUser
     /// Gets or sets the date of birth of the user.
     /// </summary>
     public DateTime? DateOfBirth { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the domain-specific identifier (UserAccountId) for this user.
+    /// This property creates a correlation between the Identity user and the domain UserAccount entity.
+    /// </summary>
+    public string? DomainId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the identity provider that created this user account.
+    /// </summary>
+    public string? IdentityProvider { get; set; }
 }
