@@ -1,4 +1,5 @@
-﻿using CleanArchitectureTemplate.Domain.UserAccounts.ValueObjects;
+﻿using CleanArchitectureTemplate.Domain.UserAccounts.Events;
+using CleanArchitectureTemplate.Domain.UserAccounts.ValueObjects;
 using CleanArchitectureTemplate.Shared.Primitives;
 
 namespace CleanArchitectureTemplate.Domain.UserAccounts.Entities;
@@ -8,6 +9,8 @@ namespace CleanArchitectureTemplate.Domain.UserAccounts.Entities;
 /// </summary>
 public sealed class UserAccount : AggregateRoot<UserAccountId>
 {
+    private readonly List<UserRole> _roles = [];
+
     /// <summary>
     /// Gets the username of the user account.
     /// </summary>
@@ -32,6 +35,11 @@ public sealed class UserAccount : AggregateRoot<UserAccountId>
     /// Gets the phone number of the user, if available.
     /// </summary>
     public PhoneNumber? PhoneNumber { get; private set; }
+
+    /// <summary>
+    /// Gets the roles associated with this user account.
+    /// </summary>
+    public IReadOnlyCollection<UserRole> Roles => _roles.AsReadOnly();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserAccount"/> class.
@@ -121,5 +129,97 @@ public sealed class UserAccount : AggregateRoot<UserAccountId>
     public void UpdateUsername(UserName username)
     {
         Username = username;
+    }
+
+    /// <summary>
+    /// Adds a role to the user account.
+    /// </summary>
+    /// <param name="role">The role to add.</param>
+    /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
+    public Result AddRole(ApplicationRole role)
+    {
+        if (role == null)
+        {
+            return Result.Failure(DomainError.Failure("UserAccount.Role", "Role cannot be null."));
+        }
+
+        if (_roles.Any(ur => ur.RoleId == role.Id))
+        {
+            return Result.Failure(DomainError.Failure("UserAccount.Role", "Role is already assigned to this user."));
+        }
+
+        var userRole = UserRole.Create(Id, role.Id);
+        _roles.Add(userRole);
+
+        // Raise domain event
+        AddDomainEvent(new UserAccountRoleAddedEvent(Id, role.Id, role.Name));
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Removes a role from the user account.
+    /// </summary>
+    /// <param name="role">The role to remove.</param>
+    /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
+    public Result RemoveRole(ApplicationRole role)
+    {
+        if (role == null)
+        {
+            return Result.Failure(DomainError.Failure("UserAccount.Role", "Role cannot be null."));
+        }
+
+        var userRole = _roles.FirstOrDefault(ur => ur.RoleId == role.Id);
+        if (userRole == null)
+        {
+            return Result.Failure(DomainError.Failure("UserAccount.Role", "Role is not assigned to this user."));
+        }
+
+        _roles.Remove(userRole);
+
+        // Raise domain event
+        AddDomainEvent(new UserAccountRoleRemovedEvent(Id, role.Id, role.Name));
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Checks if the user account has a specific role.
+    /// </summary>
+    /// <param name="roleId">The identifier of the role to check.</param>
+    /// <returns><c>true</c> if the user account has the role; otherwise, <c>false</c>.</returns>
+    public bool HasRole(ApplicationRoleId roleId)
+    {
+        return _roles.Any(ur => ur.RoleId == roleId);
+    }
+
+    /// <summary>
+    /// Checks if the user account has a specific role.
+    /// </summary>
+    /// <param name="roleName">The name of the role to check.</param>
+    /// <returns><c>true</c> if the user account has the role; otherwise, <c>false</c>.</returns>
+    public bool HasRole(string roleName)
+    {
+        return _roles.Any(ur => string.Equals(ur.Role?.NormalizedName, roleName, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    /// <summary>
+    /// Checks if the user account has a specific permission.
+    /// </summary>
+    /// <param name="permissionId">The identifier of the permission to check.</param>
+    /// <returns><c>true</c> if the user account has the permission; otherwise, <c>false</c>.</returns>
+    public bool HasPermission(PermissionId permissionId)
+    {
+        return _roles.Any(ur => ur.Role?.HasPermission(permissionId) == true);
+    }
+
+    /// <summary>
+    /// Checks if the user account has a specific permission.
+    /// </summary>
+    /// <param name="permissionName">The name of the permission to check.</param>
+    /// <returns><c>true</c> if the user account has the permission; otherwise, <c>false</c>.</returns>
+    public bool HasPermission(PermissionName permissionName)
+    {
+        return _roles.Any(ur => ur.Role?.HasPermission(permissionName) == true);
     }
 }

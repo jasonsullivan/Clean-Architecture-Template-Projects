@@ -1,9 +1,37 @@
-using CleanArchitectureTemplate.Infrastructure.MigrationWorker;
+using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Persistence;
 
-var builder = Host.CreateApplicationBuilder(args);
+using Microsoft.EntityFrameworkCore;
 
-builder.AddServiceDefaults();
-builder.Services.AddHostedService<Worker>();
+namespace CleanArchitectureTemplate.Infrastructure.MigrationWorker;
 
-var host = builder.Build();
-host.Run();
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = Host.CreateApplicationBuilder(args);
+
+        builder.AddServiceDefaults();
+
+        builder.Services.AddDbContextPool<ApplicationIdentityDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("cleanarchitecturetemplate"),
+                sqlOptions => sqlOptions.MigrationsAssembly("CleanArchitectureTemplate.Infrastructure.MigrationWorker")
+        ));
+
+        builder.EnrichSqlServerDbContext<ApplicationIdentityDbContext>();
+
+        Console.WriteLine($"Connection String: {builder.Configuration.GetConnectionString("cleanarchitecturetemplate")}");
+
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing.AddSource(DatabaseInitializerService.ActivitySourceName));
+
+        builder.Services.AddSingleton<DatabaseInitializerService>();
+
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<DatabaseInitializerService>());
+
+        builder.Services.AddHealthChecks().AddCheck<ApplicationDbInitializerHealthCheck>("DbInitializer", null);
+
+        var host = builder.Build();
+
+        host.Run();
+    }
+}

@@ -35,7 +35,11 @@ This template implements Clean Architecture principles with a clear separation o
 
 - **Migration Worker** (`CleanArchitectureTemplate.Infrastructure.MigrationWorker`):
   - Handles database migrations for deployment scenarios
-  - Supports different database providers
+  - Implements background service for automated migrations
+  - Provides health checks for monitoring migration status
+  - Integrates with OpenTelemetry for observability
+  - Supports multiple database providers (SQL Server, PostgreSQL, SQLite)
+  - Implements transaction handling for safe migrations
 
 ### Presentation Layer
 - **API** (`CleanArchitectureTemplate.API`):
@@ -97,8 +101,9 @@ The template separates identity and application data:
   - **UserAccount**: Domain representation of a user, independent of authentication provider
   - **ApplicationRole**: Domain representation of a role or security group
   - **UserRole**: Join entity for the many-to-many relationship between users and roles
-  - **Permission**: Fine-grained access control entity
+  - **Permission**: Fine-grained access control entity with name, description, and type
   - **RolePermission**: Join entity mapping permissions to roles
+  - **Value Objects**: Email, PersonName, PhoneNumber, UserName, UserStatus, UserAccountId, ApplicationRoleId, PermissionId, PermissionName, RolePermissionId, UserRoleId
 
 ### Provider-Specific Implementations
 - **For EF Core Identity**:
@@ -112,32 +117,46 @@ The template separates identity and application data:
   - Filtering options determine which groups to include/exclude
 
 ### Database Provider Support
-- SQL Server
-- PostgreSQL
+- SQL Server (via Aspire.Microsoft.EntityFrameworkCore.SqlServer)
+- PostgreSQL (via Aspire.Npgsql.EntityFrameworkCore.PostgreSQL)
+- SQLite (via CommunityToolkit.Aspire.Microsoft.EntityFrameworkCore.Sqlite)
 - Configurable through admin setup UI or environment variables
+- Integrated with Aspire for streamlined configuration
 
 ## Authorization System
 
 The template implements a permission-based authorization system:
 
 ### Permission Model
-- **Permissions**: Represent specific actions (Create, Read, Update, Delete, Execute)
-- **Scopes**: Permissions can be scoped to specific entities or processes
+- **Permission Names**: Follow the "Resource.Action" format (e.g., "Users.Create", "Projects.Read")
+- **Permission Types**: Categorized as Create, Read, Update, Delete, Execute, Manage, or FullControl
+- **Permissions**: Represent specific actions with name, description, and type
 - **Roles**: Collections of permissions assigned to users
+- **System-Defined vs. User-Defined**: Distinction between immutable and mutable roles/permissions
 - **Claims**: Generated from permissions for ASP.NET Core authorization
 
 ### Authorization Flow
 1. **Permission Definition**:
    - Permissions are defined for entities and operations
+   - Standard CRUD permissions can be automatically created for resources
    - Permissions are grouped into roles
 2. **Role Assignment**:
    - Users are assigned to roles (directly or via security groups)
+   - Role assignments trigger domain events for audit logging
 3. **Permission Checks**:
+   - Domain entities provide permission checking capabilities
    - Application services check permissions before operations
    - API controllers use authorization attributes
 4. **Claims-Based Authorization**:
    - Permissions are converted to claims
    - ASP.NET Core authorization handlers validate claims
+
+### Authorization Services
+- **IAuthorizationService**: Provides methods to check if a user has specific permissions or roles
+- **IRoleManagementService**: Manages roles and their permissions
+- **IPermissionManagementService**: Manages permissions and their assignments
+- **Domain-Level Authorization**: Permission checks can be performed at the domain level
+- **Event-Driven Authorization**: Changes to roles and permissions raise domain events
 
 ## Key Design Patterns
 
@@ -172,6 +191,13 @@ The template implements a permission-based authorization system:
 ### Mapper Pattern
 - Maps between infrastructure entities and domain entities
 - Keeps domain model clean from infrastructure concerns
+
+### Health Monitoring Pattern
+- Provides health check endpoints for system status monitoring
+- Implements custom health checks for database initialization
+- Reports health status (Healthy, Degraded, Unhealthy) with detailed messages
+- Integrates with ASP.NET Core health check middleware
+- Enables monitoring systems to track application health
 
 ## Configuration and Setup
 

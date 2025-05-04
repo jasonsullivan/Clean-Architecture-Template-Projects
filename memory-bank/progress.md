@@ -2,9 +2,9 @@
 
 ## Current Status
 
-**Project Phase**: Identity Infrastructure Implementation
+**Project Phase**: Role-Based Access Control and Database Migration Implementation
 
-The project has progressed from domain model design to identity infrastructure implementation. The solution structure is in place, and comprehensive documentation of the domain model has been created in the memory bank. The core value objects and UserAccount entity have been implemented. The key interfaces for authentication in the Application layer have been defined and are now being implemented in the Infrastructure.Identity.EFCore project.
+The project has progressed from identity infrastructure implementation to role-based access control (RBAC) and database migration implementation. The solution structure is in place, and comprehensive documentation of the domain model has been created in the memory bank. The core value objects and entities (UserAccount, ApplicationRole, Permission, etc.) have been implemented. The key interfaces for authentication and authorization in the Application layer have been defined and implemented in the domain layer. The EF Core Identity infrastructure implementation is complete. Current focus is on implementing the database migration worker and setting up the testing infrastructure.
 
 ## What Works
 
@@ -27,10 +27,18 @@ The project has progressed from domain model design to identity infrastructure i
   - ✅ UserAccountId (with validation)
   - ✅ UserName (with validation)
   - ✅ UserStatus (with predefined statuses)
+  - ✅ ApplicationRoleId (with validation)
+  - ✅ PermissionId (with validation)
+  - ✅ PermissionName (with Resource.Action format validation)
+  - ✅ RolePermissionId (with validation)
+  - ✅ UserRoleId (with validation)
 - ✅ Implementation of UserAccount aggregate root entity
+- ✅ Implementation of ApplicationRole entity with permission management
+- ✅ Implementation of Permission entity with type and description
+- ✅ Implementation of join entities (RolePermission, UserRole)
 - ✅ Definition of aggregate boundaries and relationships
-- ✅ Design of domain events and event handlers
-- ✅ Design of domain services for cross-aggregate operations
+- ✅ Implementation of domain events for permissions and roles
+- ✅ Implementation of domain service interfaces for authorization and role management
 - ✅ Visual representation of the domain model through class diagrams
 
 ### Application Layer
@@ -38,6 +46,10 @@ The project has progressed from domain model design to identity infrastructure i
   - ✅ ICurrentUserService (for accessing current user information)
   - ✅ IIdentityService (for user and role management)
   - ✅ IIdentityProviderFactory (for selecting identity providers)
+- ✅ Definition of key authorization interfaces:
+  - ✅ IAuthorizationService (for checking user permissions and roles)
+  - ✅ IRoleManagementService (for managing roles and their permissions)
+  - ✅ IPermissionManagementService (for managing permissions)
 - ✅ Implementation of Result pattern for appropriate operations
 - ✅ Integration of cancellation token support for async methods
 
@@ -50,6 +62,18 @@ The project has progressed from domain model design to identity infrastructure i
 - ✅ ApplicationIdentityDbContext setup complete
 - ✅ Identity mapper with robust error handling and logging
 - ✅ Service registration extensions for dependency injection
+- ✅ Multi-database provider support (SQL Server, PostgreSQL, SQLite)
+
+### Database Migration Infrastructure
+- ✅ DatabaseInitializerService implemented as a background service
+- ✅ Transaction handling for safe migrations
+- ✅ Health checks for monitoring migration status
+- ✅ Integration with OpenTelemetry for observability and tracing
+
+### Testing Infrastructure
+- ✅ Infrastructure tests project setup with xUnit
+- ✅ Support for in-memory database testing
+- ✅ Structure for testing both common infrastructure and identity components
 
 ## What's In Progress
 
@@ -59,9 +83,10 @@ The project has progressed from domain model design to identity infrastructure i
 - 🔄 Design documents for admin setup UI
 
 ### Domain Model Implementation
-- 🔄 Implementation of ApplicationRole and Permission entities
-- 🔄 Implementation of domain events and event handlers
-- 🔄 Implementation of domain services
+- ✅ Implementation of ApplicationRole and Permission entities
+- ✅ Implementation of domain events and event handlers
+- ✅ Implementation of domain service interfaces
+- 🔄 Implementation of concrete domain services
 
 ### Identity Infrastructure
 - ✅ EF Core Identity provider implementation complete
@@ -74,12 +99,18 @@ The project has progressed from domain model design to identity infrastructure i
 - ✅ Service registration for EF Core Identity components
 - 🔄 Testing and validation of identity services
 
+### Database Migration Infrastructure
+- 🔄 Testing and validation of database migration worker
+- 🔄 Integration with different database providers
+
 ## What's Left to Build
 
 ### Core Layer Implementation
 - ✅ Domain value objects (completed)
 - ✅ UserAccount entity (completed)
-- 🔄 Other domain entities (in progress)
+- ✅ ApplicationRole and Permission entities (completed)
+- ✅ Domain events for permissions and roles (completed)
+- ✅ Domain service interfaces (completed)
 - ❌ Repository interfaces
 - ❌ Application services and CQRS handlers
 
@@ -88,7 +119,7 @@ The project has progressed from domain model design to identity infrastructure i
 - ✅ Identity database context and configurations (completed)
 - ✅ EF Core Identity provider implementation (completed)
 - ❌ Microsoft Entra ID provider implementation
-- ❌ Migration worker for database setup
+- ✅ Migration worker for database setup (completed)
 
 ### Presentation Layer Implementation
 - ❌ API controllers and endpoints
@@ -99,14 +130,16 @@ The project has progressed from domain model design to identity infrastructure i
 ### Authentication and Authorization
 - ❌ Authentication flows for both providers
 - ❌ Token validation and generation
+- ✅ Domain model for permission-based authorization (completed)
+- ❌ Concrete authorization service implementation
 - ❌ Permission-based authorization handlers
 - ❌ Role synchronization mechanisms
 
 ### Testing
 - ❌ Unit tests for domain and application logic
-- ❌ Integration tests for repositories
+- 🔄 Integration tests for repositories (in progress)
 - ❌ API endpoint tests
-- ❌ Authentication and authorization tests
+- 🔄 Authentication and authorization tests (in progress)
 
 ### Deployment and CI/CD
 - ❌ Docker support
@@ -118,14 +151,15 @@ The project has progressed from domain model design to identity infrastructure i
 ### Technical Challenges
 1. **Authentication Provider Abstraction**: Creating a clean abstraction for different authentication providers while maintaining flexibility.
 2. **Permission System Performance**: Ensuring the permission-based authorization system performs well with complex permission hierarchies.
-3. **Database Provider Support**: Supporting multiple database providers with different SQL dialects and features.
-4. **EF Core Identity Integration**: Properly integrating ASP.NET Core Identity with our domain model without compromising Clean Architecture principles.
+3. **Database Provider Support**: Supporting multiple database providers with different SQL dialects and features - now implemented with Aspire packages for SQL Server, PostgreSQL, and SQLite.
+4. **EF Core Identity Integration**: Properly integrating ASP.NET Core Identity with our domain model without compromising Clean Architecture principles - successfully implemented.
 
 ### Open Questions
 1. **Synchronization Strategy**: Determining the best approach for synchronizing Microsoft Entra ID users and groups.
-2. **Migration Approach**: Deciding on the strategy for handling database migrations across different providers.
+2. **Migration Approach**: Strategy for handling database migrations across different providers has been implemented with the DatabaseInitializerService.
 3. **Configuration Complexity**: Balancing flexibility with simplicity in configuration options.
 4. **Error Handling Strategy**: Standardizing error handling across different authentication providers.
+5. **Observability Strategy**: Determining the best approach for monitoring and observability - initial implementation with OpenTelemetry.
 
 ## Evolution of Project Decisions
 
@@ -146,6 +180,26 @@ The project has progressed from domain model design to identity infrastructure i
 - **Comprehensive Logging**: Added detailed logging throughout identity services for better diagnostics.
 - **Error Type Classification**: Using specific error types (NotFound, Conflict, Problem) for more precise error handling.
 - **User Caching**: Implemented caching for current user to improve performance.
+- **Multi-Database Provider Support**: Implemented support for SQL Server, PostgreSQL, and SQLite using Aspire packages.
+- **Health Checks**: Added health checks for monitoring database initialization status.
+- **OpenTelemetry Integration**: Added tracing for observability of database operations.
+- **Transaction Handling**: Implemented transaction support for database migrations to ensure consistency.
+- **Permission Naming Convention**: Standardized "Resource.Action" format for permission names.
+- **Permission Types**: Defined clear permission types (Create, Read, Update, Delete, Execute, Manage, FullControl).
+- **System-Defined vs. User-Defined Roles**: Distinction between roles that cannot be modified and those that can.
+- **Domain Events for Authorization**: Implementation of domain events for permission and role changes.
+
+### Recent Decisions
+- **Result Pattern**: Standardized use of Result pattern across interfaces for consistent error handling.
+- **Cancellation Token Support**: Added to all async methods to support proper operation cancellation.
+- **Interface Segregation**: Clear separation of identity services into specific interfaces.
+- **Comprehensive Logging**: Added detailed logging throughout identity services for better diagnostics.
+- **Error Type Classification**: Using specific error types (NotFound, Conflict, Problem) for more precise error handling.
+- **User Caching**: Implemented caching for current user to improve performance.
+- **Multi-Database Provider Support**: Implemented support for SQL Server, PostgreSQL, and SQLite using Aspire packages.
+- **Health Checks**: Added health checks for monitoring database initialization status.
+- **OpenTelemetry Integration**: Added tracing for observability of database operations.
+- **Transaction Handling**: Implemented transaction support for database migrations to ensure consistency.
 
 ## Next Milestones
 
@@ -158,9 +212,10 @@ The project has progressed from domain model design to identity infrastructure i
 
 ### Milestone 2: Infrastructure Layer
 - Implement repository implementations
-- Complete database contexts
-- Set up entity configurations
-- Implement EF Core Identity provider
+- ✅ Complete database contexts
+- ✅ Set up entity configurations
+- ✅ Implement EF Core Identity provider
+- ✅ Implement database migration worker
 
 **Current Focus - Target Completion**: [Date TBD]
 
@@ -201,5 +256,13 @@ As the project progresses, we continue to gather valuable insights:
 7. **Logging Importance**: The value of comprehensive logging for debugging and troubleshooting complex systems.
 8. **Performance Considerations**: The benefits of implementing caching for frequently accessed data like the current user.
 9. **Dependency Injection**: The importance of proper service registration and dependency injection for maintainable code.
+10. **Database Provider Flexibility**: The value of supporting multiple database providers for different deployment scenarios.
+11. **Health Monitoring**: The importance of health checks for monitoring system status and diagnosing issues.
+12. **Observability**: The benefits of integrating with observability tools like OpenTelemetry for tracing and monitoring.
+13. **Transaction Management**: The importance of proper transaction handling for database operations to ensure data consistency.
+14. **Permission Naming Conventions**: The value of standardized naming conventions for permissions.
+15. **Domain-Driven Authorization**: The benefits of keeping authorization logic in the domain layer.
+16. **Event-Driven Role Management**: The advantages of using domain events for role and permission changes.
+17. **System-Defined vs. User-Defined Roles**: The security benefits of distinguishing between immutable and mutable roles.
 
 These lessons will be expanded as the project progresses and more implementation work is completed.

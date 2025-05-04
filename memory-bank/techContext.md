@@ -27,11 +27,16 @@
 - **Moq**: Mocking library for unit tests
 - **FluentAssertions**: Fluent assertions for tests
 - **Respawn**: Database reset tool for integration tests
+- **Microsoft.EntityFrameworkCore.InMemory**: For in-memory database testing
 
 ### Development and Deployment
 - **Aspire**: For service configuration and orchestration
+  - **Aspire.Microsoft.EntityFrameworkCore.SqlServer**: For SQL Server integration
+  - **Aspire.Npgsql.EntityFrameworkCore.PostgreSQL**: For PostgreSQL integration
+  - **CommunityToolkit.Aspire.Microsoft.EntityFrameworkCore.Sqlite**: For SQLite integration
 - **Docker**: Containerization for deployment
 - **GitHub Actions**: CI/CD pipeline
+- **OpenTelemetry**: For distributed tracing and observability
 
 ## Technical Requirements
 
@@ -92,8 +97,10 @@
 
 ### Migration Strategy
 - **Code-First Migrations**: Using EF Core migrations
-- **Migration Worker**: For automated deployment migrations
+- **Migration Worker**: For automated deployment migrations with health checks
+- **Transaction Support**: Ensuring data consistency during migrations
 - **Separate Migration Projects**: For identity and application databases
+- **OpenTelemetry Integration**: For tracing migration operations
 
 ## Authentication Configuration
 
@@ -158,6 +165,7 @@
 
 ### Monitoring and Diagnostics
 - **Logging**: Structured logging with Serilog
-- **Health Checks**: Endpoint for monitoring
+- **Health Checks**: Endpoint for monitoring database initialization and application status
 - **Metrics**: For performance monitoring
-- **Tracing**: For request tracking
+- **Tracing**: For request tracking with OpenTelemetry integration
+- **Activity Source**: For detailed operation tracking in database migrations

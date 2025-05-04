@@ -18,6 +18,7 @@
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.1" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.2.1" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.2.1" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="9.2.1" />
     <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.2.1" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.1" />
     <!-- Entity Framework -->
@@ -66,7 +67,7 @@
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Testcontainers" Version="3.6.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.0" />
     <!-- UI -->
     <PackageVersion Include="MudBlazor" Version="8.6.0" />
     <PackageVersion Include="MudBlazor.ThemeManager" Version="3.0.0" />

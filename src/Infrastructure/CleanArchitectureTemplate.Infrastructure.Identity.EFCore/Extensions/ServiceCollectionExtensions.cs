@@ -1,8 +1,10 @@
 using CleanArchitectureTemplate.Application.Common.Interfaces.Identity;
+using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Configuration;
 using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Entities;
 using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Mapping;
 using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Persistence;
 using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Services;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
 
 namespace CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Extensions;
@@ -84,14 +87,14 @@ public static class ServiceCollectionExtensions
         .AddDefaultTokenProviders();
 
         // Register the mapper with logger
-        services.AddSingleton<IdentityMapper>(sp => 
+        services.AddSingleton<IdentityMapper>(sp =>
             new IdentityMapper(sp.GetRequiredService<ILogger<IdentityMapper>>()));
 
         // Register the identity services
         services.AddScoped<EFCoreIdentityService>();
         services.AddScoped<EFCoreCurrentUserService>();
         services.AddScoped<IIdentityProviderFactory, EFCoreIdentityProviderFactory>();
-        
+
         // Add logging
         services.AddLogging();
 
@@ -107,9 +110,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettingsSection = configuration.GetSection("Identity:JwtSettings");
-        
+
         var jwtSettings = jwtSettingsSection.Get<JwtSettings>() ?? new JwtSettings();
-        
+
         services.Configure<JwtSettings>(jwtSettingsSection);
 
         services.AddAuthentication(options =>
@@ -144,9 +147,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCookieAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var cookieSettingsSection = configuration.GetSection("Identity:CookieSettings");
-        
+
         var cookieSettings = cookieSettingsSection.Get<CookieSettings>() ?? new CookieSettings();
-        
+
         services.Configure<CookieSettings>(cookieSettingsSection);
 
         services.AddAuthentication(options =>
@@ -204,13 +207,13 @@ public static class ServiceCollectionExtensions
     private static async Task SeedDefaultRoles(RoleManager<ApplicationRole> roleManager)
     {
         // Seed default roles if they don't exist
-        string[] defaultRoles = { "Administrator", "User" };
+        string[] defaultRoles = ["Administrator", "User"];
 
         foreach (var roleName in defaultRoles)
         {
-            if (!await roleManager.RoleExistsAsync(roleName))
+            if (!await roleManager.RoleExistsAsync(roleName).ConfigureAwait(false))
             {
-                await roleManager.CreateAsync(new ApplicationRole(roleName));
+                await roleManager.CreateAsync(new ApplicationRole(roleName)).ConfigureAwait(false);
             }
         }
     }
@@ -224,7 +227,7 @@ public static class ServiceCollectionExtensions
         var adminUserConfig = configuration.GetSection("Identity:DefaultAdminUser").Get<DefaultAdminUser>() ?? new DefaultAdminUser();
 
         // Check if admin user exists
-        var adminUser = await userManager.FindByEmailAsync(adminUserConfig.Email);
+        var adminUser = await userManager.FindByEmailAsync(adminUserConfig.Email).ConfigureAwait(false);
 
         if (adminUser == null)
         {
@@ -238,101 +241,13 @@ public static class ServiceCollectionExtensions
                 LastName = adminUserConfig.LastName
             };
 
-            var result = await userManager.CreateAsync(adminUser, adminUserConfig.Password);
+            var result = await userManager.CreateAsync(adminUser, adminUserConfig.Password).ConfigureAwait(false);
 
             if (result.Succeeded)
             {
                 // Assign admin role
-                await userManager.AddToRoleAsync(adminUser, "Administrator");
+                await userManager.AddToRoleAsync(adminUser, "Administrator").ConfigureAwait(false);
             }
         }
     }
-}
-
-/// <summary>
-/// Settings for JWT token authentication.
-/// </summary>
-public class JwtSettings
-{
-    /// <summary>
-    /// Gets or sets the issuer of the JWT token.
-    /// </summary>
-    public string Issuer { get; set; } = "CleanArchitectureTemplate";
-
-    /// <summary>
-    /// Gets or sets the audience of the JWT token.
-    /// </summary>
-    public string Audience { get; set; } = "CleanArchitectureTemplate.API";
-
-    /// <summary>
-    /// Gets or sets the secret key used for signing JWT tokens.
-    /// </summary>
-    public string SecretKey { get; set; } = "YourStrongSecretKeyHere_AtLeast32CharsLong!";
-
-    /// <summary>
-    /// Gets or sets the expiration time of JWT tokens in minutes.
-    /// </summary>
-    public int ExpirationTimeInMinutes { get; set; } = 60;
-}
-
-/// <summary>
-/// Settings for cookie authentication.
-/// </summary>
-public class CookieSettings
-{
-    /// <summary>
-    /// Gets or sets the expiration time of cookies in minutes.
-    /// </summary>
-    public int ExpirationTimeInMinutes { get; set; } = 30;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether sliding expiration is enabled.
-    /// </summary>
-    public bool SlidingExpiration { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the login path.
-    /// </summary>
-    public string LoginPath { get; set; } = "/Account/Login";
-
-    /// <summary>
-    /// Gets or sets the logout path.
-    /// </summary>
-    public string LogoutPath { get; set; } = "/Account/Logout";
-
-    /// <summary>
-    /// Gets or sets the access denied path.
-    /// </summary>
-    public string AccessDeniedPath { get; set; } = "/Account/AccessDenied";
-}
-
-/// <summary>
-/// Default admin user settings.
-/// </summary>
-public class DefaultAdminUser
-{
-    /// <summary>
-    /// Gets or sets the email of the default admin user.
-    /// </summary>
-    public string Email { get; set; } = "admin@example.com";
-
-    /// <summary>
-    /// Gets or sets the username of the default admin user.
-    /// </summary>
-    public string UserName { get; set; } = "admin";
-
-    /// <summary>
-    /// Gets or sets the password of the default admin user.
-    /// </summary>
-    public string Password { get; set; } = "Admin123!";
-
-    /// <summary>
-    /// Gets or sets the first name of the default admin user.
-    /// </summary>
-    public string FirstName { get; set; } = "System";
-
-    /// <summary>
-    /// Gets or sets the last name of the default admin user.
-    /// </summary>
-    public string LastName { get; set; } = "Administrator";
 }
