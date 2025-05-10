@@ -1,4 +1,4 @@
-using CleanArchitectureTemplate.Application.Common.Interfaces.Identity;
+using CleanArchitectureTemplate.Domain.UserAccounts.Services;
 using CleanArchitectureTemplate.Domain.UserAccounts.ValueObjects;
 using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Entities;
 using CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Persistence;

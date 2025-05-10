@@ -11,7 +11,7 @@ public sealed class ApplicationRoleCreatedEvent : DomainEvent
     /// <summary>
     /// Gets the identifier of the application role that was created.
     /// </summary>
-    public ApplicationRoleId RoleId { get; }
+    public DomainRoleId RoleId { get; }
 
     /// <summary>
     /// Gets the name of the application role that was created.
@@ -42,7 +42,7 @@ public sealed class ApplicationRoleCreatedEvent : DomainEvent
     /// <param name="description">The description of the application role that was created.</param>
     /// <param name="isSystemDefined">A value indicating whether the application role is system-defined.</param>
     public ApplicationRoleCreatedEvent(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         string name,
         string normalizedName,
         string description,

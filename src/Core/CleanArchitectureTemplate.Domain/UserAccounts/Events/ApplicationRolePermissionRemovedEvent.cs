@@ -11,7 +11,7 @@ public sealed class ApplicationRolePermissionRemovedEvent : DomainEvent
     /// <summary>
     /// Gets the identifier of the application role from which the permission was removed.
     /// </summary>
-    public ApplicationRoleId RoleId { get; }
+    public DomainRoleId RoleId { get; }
 
     /// <summary>
     /// Gets the identifier of the permission that was removed from the application role.
@@ -30,7 +30,7 @@ public sealed class ApplicationRolePermissionRemovedEvent : DomainEvent
     /// <param name="permissionId">The identifier of the permission that was removed from the application role.</param>
     /// <param name="permissionName">The name of the permission that was removed from the application role.</param>
     public ApplicationRolePermissionRemovedEvent(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         PermissionId permissionId,
         PermissionName permissionName)
     {

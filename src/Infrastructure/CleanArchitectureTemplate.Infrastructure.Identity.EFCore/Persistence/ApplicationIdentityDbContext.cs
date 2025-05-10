@@ -51,6 +51,9 @@ public sealed class ApplicationIdentityDbContext(DbContextOptions<ApplicationIde
             entity.Property(e => e.IdentityProvider)
                   .HasMaxLength(50)
                   .IsUnicode(false);
+
+            entity.Property(e => e.PasswordChangeRequired)
+                  .HasDefaultValue(false);
         });
 
         builder.Entity<ApplicationRole>(entity =>

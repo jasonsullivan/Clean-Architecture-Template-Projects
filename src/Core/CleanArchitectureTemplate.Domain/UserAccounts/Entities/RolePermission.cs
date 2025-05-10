@@ -11,7 +11,7 @@ public sealed class RolePermission : EntityBase<RolePermissionId>
     /// <summary>
     /// Gets the identifier of the application role.
     /// </summary>
-    public ApplicationRoleId RoleId { get; private set; }
+    public DomainRoleId RoleId { get; private set; }
 
     /// <summary>
     /// Gets the identifier of the permission.
@@ -21,7 +21,7 @@ public sealed class RolePermission : EntityBase<RolePermissionId>
     /// <summary>
     /// Gets the application role associated with this role permission.
     /// </summary>
-    public ApplicationRole Role { get; private set; } = null!;
+    public DomainRole Role { get; private set; } = null!;
 
     /// <summary>
     /// Gets the permission associated with this role permission.
@@ -36,7 +36,7 @@ public sealed class RolePermission : EntityBase<RolePermissionId>
     /// <param name="permissionId">The identifier of the permission.</param>
     private RolePermission(
         RolePermissionId id,
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         PermissionId permissionId) : base(id)
     {
         RoleId = roleId;
@@ -50,7 +50,7 @@ public sealed class RolePermission : EntityBase<RolePermissionId>
     /// <param name="permissionId">The identifier of the permission.</param>
     /// <returns>A new <see cref="RolePermission"/> instance.</returns>
     public static RolePermission Create(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         PermissionId permissionId)
     {
         return new RolePermission(RolePermissionId.CreateNew().Value, roleId, permissionId);

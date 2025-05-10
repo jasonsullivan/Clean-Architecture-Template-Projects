@@ -11,7 +11,7 @@ public sealed class ApplicationRolePermissionAddedEvent : DomainEvent
     /// <summary>
     /// Gets the identifier of the application role to which the permission was added.
     /// </summary>
-    public ApplicationRoleId RoleId { get; }
+    public DomainRoleId RoleId { get; }
 
     /// <summary>
     /// Gets the identifier of the permission that was added to the application role.
@@ -30,7 +30,7 @@ public sealed class ApplicationRolePermissionAddedEvent : DomainEvent
     /// <param name="permissionId">The identifier of the permission that was added to the application role.</param>
     /// <param name="permissionName">The name of the permission that was added to the application role.</param>
     public ApplicationRolePermissionAddedEvent(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         PermissionId permissionId,
         PermissionName permissionName)
     {

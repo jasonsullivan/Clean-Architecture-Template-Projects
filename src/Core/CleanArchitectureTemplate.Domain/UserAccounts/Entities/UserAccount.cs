@@ -136,7 +136,7 @@ public sealed class UserAccount : AggregateRoot<UserAccountId>
     /// </summary>
     /// <param name="role">The role to add.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
-    public Result AddRole(ApplicationRole role)
+    public Result AddRole(DomainRole role)
     {
         if (role == null)
         {
@@ -162,7 +162,7 @@ public sealed class UserAccount : AggregateRoot<UserAccountId>
     /// </summary>
     /// <param name="role">The role to remove.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
-    public Result RemoveRole(ApplicationRole role)
+    public Result RemoveRole(DomainRole role)
     {
         if (role == null)
         {
@@ -188,7 +188,7 @@ public sealed class UserAccount : AggregateRoot<UserAccountId>
     /// </summary>
     /// <param name="roleId">The identifier of the role to check.</param>
     /// <returns><c>true</c> if the user account has the role; otherwise, <c>false</c>.</returns>
-    public bool HasRole(ApplicationRoleId roleId)
+    public bool HasRole(DomainRoleId roleId)
     {
         return _roles.Any(ur => ur.RoleId == roleId);
     }

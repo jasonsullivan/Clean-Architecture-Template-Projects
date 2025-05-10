@@ -1,7 +1,7 @@
 using CleanArchitectureTemplate.Domain.UserAccounts.ValueObjects;
 using CleanArchitectureTemplate.Shared.Primitives;
 
-namespace CleanArchitectureTemplate.Application.Common.Interfaces.Identity;
+namespace CleanArchitectureTemplate.Domain.UserAccounts.Services;
 
 /// <summary>
 /// Interface for accessing the currently authenticated user's information.

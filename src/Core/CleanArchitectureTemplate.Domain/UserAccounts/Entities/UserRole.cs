@@ -16,7 +16,7 @@ public sealed class UserRole : EntityBase<UserRoleId>
     /// <summary>
     /// Gets the identifier of the application role.
     /// </summary>
-    public ApplicationRoleId RoleId { get; private set; }
+    public DomainRoleId RoleId { get; private set; }
 
     /// <summary>
     /// Gets the user account associated with this user role.
@@ -26,7 +26,7 @@ public sealed class UserRole : EntityBase<UserRoleId>
     /// <summary>
     /// Gets the application role associated with this user role.
     /// </summary>
-    public ApplicationRole Role { get; private set; } = null!;
+    public DomainRole Role { get; private set; } = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserRole"/> class.
@@ -37,7 +37,7 @@ public sealed class UserRole : EntityBase<UserRoleId>
     private UserRole(
         UserRoleId id,
         UserAccountId userAccountId,
-        ApplicationRoleId roleId) : base(id)
+        DomainRoleId roleId) : base(id)
     {
         UserAccountId = userAccountId;
         RoleId = roleId;
@@ -51,7 +51,7 @@ public sealed class UserRole : EntityBase<UserRoleId>
     /// <returns>A new <see cref="UserRole"/> instance.</returns>
     public static UserRole Create(
         UserAccountId userAccountId,
-        ApplicationRoleId roleId)
+        DomainRoleId roleId)
     {
         return new UserRole(UserRoleId.CreateNew().Value, userAccountId, roleId);
     }

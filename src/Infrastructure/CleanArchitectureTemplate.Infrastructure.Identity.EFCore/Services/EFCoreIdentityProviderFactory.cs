@@ -1,4 +1,6 @@
 using CleanArchitectureTemplate.Application.Common.Interfaces.Identity;
+using CleanArchitectureTemplate.Domain.UserAccounts.Services;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -7,31 +9,23 @@ namespace CleanArchitectureTemplate.Infrastructure.Identity.EFCore.Services;
 /// <summary>
 /// Implementation of IIdentityProviderFactory for EF Core Identity.
 /// </summary>
-public class EFCoreIdentityProviderFactory : IIdentityProviderFactory
+/// <remarks>
+/// Initializes a new instance of the <see cref="EFCoreIdentityProviderFactory"/> class.
+/// </remarks>
+/// <param name="identityService">The EF Core Identity service implementation.</param>
+/// <param name="currentUserService">The EF Core current user service implementation.</param>
+/// <param name="options">The options for EF Core Identity.</param>
+/// <param name="logger">The logger instance.</param>
+public class EFCoreIdentityProviderFactory(
+    EFCoreIdentityService identityService,
+    EFCoreCurrentUserService currentUserService,
+    IOptions<EFCoreIdentityOptions> options,
+    ILogger<EFCoreIdentityProviderFactory> logger) : IIdentityProviderFactory
 {
-    private readonly EFCoreIdentityService _identityService;
-    private readonly EFCoreCurrentUserService _currentUserService;
-    private readonly EFCoreIdentityOptions _options;
-    private readonly ILogger<EFCoreIdentityProviderFactory> _logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EFCoreIdentityProviderFactory"/> class.
-    /// </summary>
-    /// <param name="identityService">The EF Core Identity service implementation.</param>
-    /// <param name="currentUserService">The EF Core current user service implementation.</param>
-    /// <param name="options">The options for EF Core Identity.</param>
-    /// <param name="logger">The logger instance.</param>
-    public EFCoreIdentityProviderFactory(
-        EFCoreIdentityService identityService,
-        EFCoreCurrentUserService currentUserService,
-        IOptions<EFCoreIdentityOptions> options,
-        ILogger<EFCoreIdentityProviderFactory> logger)
-    {
-        _identityService = identityService;
-        _currentUserService = currentUserService;
-        _options = options.Value;
-        _logger = logger;
-    }
+    private readonly EFCoreIdentityService _identityService = identityService;
+    private readonly EFCoreCurrentUserService _currentUserService = currentUserService;
+    private readonly EFCoreIdentityOptions _options = options.Value;
+    private readonly ILogger<EFCoreIdentityProviderFactory> _logger = logger;
 
     /// <inheritdoc/>
     public ICurrentUserService CreateCurrentUserService()
@@ -93,7 +87,7 @@ public class EFCoreIdentityOptions
     /// Gets or sets the lockout options.
     /// </summary>
     public LockoutOptions LockoutOptions { get; set; } = new LockoutOptions();
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether to use domain ID claims.
     /// </summary>

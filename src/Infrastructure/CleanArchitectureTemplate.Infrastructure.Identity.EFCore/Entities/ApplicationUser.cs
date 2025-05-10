@@ -52,4 +52,9 @@ public class ApplicationUser : IdentityUser
     /// Gets or sets the identity provider that created this user account.
     /// </summary>
     public string? IdentityProvider { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the user must change their password on next login.
+    /// </summary>
+    public bool PasswordChangeRequired { get; set; }
 }

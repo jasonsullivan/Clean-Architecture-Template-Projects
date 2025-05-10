@@ -51,7 +51,7 @@ public interface IAuthorizationService
     /// <returns>A <see cref="Result{Boolean}"/> indicating whether the user has the role.</returns>
     Task<Result<bool>> HasRoleAsync(
         UserAccountId userAccountId,
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 
     /// <summary>

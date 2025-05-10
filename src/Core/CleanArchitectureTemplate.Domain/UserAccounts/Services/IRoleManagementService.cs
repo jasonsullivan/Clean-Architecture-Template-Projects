@@ -17,7 +17,7 @@ public interface IRoleManagementService
     /// <param name="isSystemDefined">A value indicating whether the role is system-defined.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the created role.</returns>
-    Task<Result<ApplicationRole>> CreateRoleAsync(
+    Task<Result<DomainRole>> CreateRoleAsync(
         string name,
         string description,
         bool isSystemDefined = false,
@@ -29,8 +29,8 @@ public interface IRoleManagementService
     /// <param name="roleId">The identifier of the role.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the role.</returns>
-    Task<Result<ApplicationRole>> GetRoleByIdAsync(
-        ApplicationRoleId roleId,
+    Task<Result<DomainRole>> GetRoleByIdAsync(
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -39,7 +39,7 @@ public interface IRoleManagementService
     /// <param name="roleName">The name of the role.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the role.</returns>
-    Task<Result<ApplicationRole>> GetRoleByNameAsync(
+    Task<Result<DomainRole>> GetRoleByNameAsync(
         string roleName,
         CancellationToken cancellationToken = default);
 
@@ -48,7 +48,7 @@ public interface IRoleManagementService
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the collection of roles.</returns>
-    Task<Result<IReadOnlyCollection<ApplicationRole>>> GetAllRolesAsync(
+    Task<Result<IReadOnlyCollection<DomainRole>>> GetAllRolesAsync(
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -59,7 +59,7 @@ public interface IRoleManagementService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
     Task<Result> UpdateRoleDescriptionAsync(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         string description,
         CancellationToken cancellationToken = default);
 
@@ -70,7 +70,7 @@ public interface IRoleManagementService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
     Task<Result> DeleteRoleAsync(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -81,7 +81,7 @@ public interface IRoleManagementService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
     Task<Result> AddPermissionToRoleAsync(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         PermissionId permissionId,
         CancellationToken cancellationToken = default);
 
@@ -93,7 +93,7 @@ public interface IRoleManagementService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
     Task<Result> RemovePermissionFromRoleAsync(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         PermissionId permissionId,
         CancellationToken cancellationToken = default);
 
@@ -104,7 +104,7 @@ public interface IRoleManagementService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the collection of permissions.</returns>
     Task<Result<IReadOnlyCollection<Permission>>> GetPermissionsForRoleAsync(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -116,7 +116,7 @@ public interface IRoleManagementService
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
     Task<Result> AssignRoleToUserAsync(
         UserAccountId userAccountId,
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -128,7 +128,7 @@ public interface IRoleManagementService
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
     Task<Result> RemoveRoleFromUserAsync(
         UserAccountId userAccountId,
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -137,7 +137,7 @@ public interface IRoleManagementService
     /// <param name="userAccountId">The identifier of the user account.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the collection of roles.</returns>
-    Task<Result<IReadOnlyCollection<ApplicationRole>>> GetRolesForUserAsync(
+    Task<Result<IReadOnlyCollection<DomainRole>>> GetRolesForUserAsync(
         UserAccountId userAccountId,
         CancellationToken cancellationToken = default);
 
@@ -148,6 +148,6 @@ public interface IRoleManagementService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the collection of user accounts.</returns>
     Task<Result<IReadOnlyCollection<UserAccount>>> GetUsersForRoleAsync(
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         CancellationToken cancellationToken = default);
 }

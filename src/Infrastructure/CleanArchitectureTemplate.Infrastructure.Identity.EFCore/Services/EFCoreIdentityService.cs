@@ -135,7 +135,7 @@ public class EFCoreIdentityService(
 
             // Check if user with same domain ID already exists
             var existingUser = await _dbContext.Users
-                .Where(u => u.DomainId == userAccount.Id.Value.ToString())
+                .Where(u => string.Equals(u.DomainId, userAccount.Id.Value.ToString(), StringComparison.Ordinal))
                 .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
             if (existingUser != null)
@@ -537,7 +537,7 @@ public class EFCoreIdentityService(
 
         // Ensure the DomainId comparison is case-insensitive and handles potential mismatches
         var user = await _dbContext.Users
-            .Where(u => u.DomainId == userId.Value.ToString())
+            .Where(u => string.Equals(u.DomainId, userId.Value.ToString(), StringComparison.Ordinal))
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
 

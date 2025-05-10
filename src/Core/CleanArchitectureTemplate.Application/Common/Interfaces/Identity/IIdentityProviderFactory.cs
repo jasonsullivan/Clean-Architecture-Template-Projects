@@ -1,3 +1,5 @@
+using CleanArchitectureTemplate.Domain.UserAccounts.Services;
+
 namespace CleanArchitectureTemplate.Application.Common.Interfaces.Identity;
 
 /// <summary>

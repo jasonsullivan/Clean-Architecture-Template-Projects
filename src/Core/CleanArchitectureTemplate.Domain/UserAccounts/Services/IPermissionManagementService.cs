@@ -104,7 +104,7 @@ public interface IPermissionManagementService
     /// <param name="permissionId">The identifier of the permission.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result{T}"/> containing the collection of roles.</returns>
-    Task<Result<IReadOnlyCollection<ApplicationRole>>> GetRolesForPermissionAsync(
+    Task<Result<IReadOnlyCollection<DomainRole>>> GetRolesForPermissionAsync(
         PermissionId permissionId,
         CancellationToken cancellationToken = default);
 

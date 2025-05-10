@@ -7,9 +7,9 @@ namespace CleanArchitectureTemplate.Domain.UserAccounts.Entities;
 /// <summary>
 /// Represents an application role in the system.
 /// </summary>
-public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
+public sealed class DomainRole : AggregateRoot<DomainRoleId>
 {
-    private readonly List<RolePermission> _permissions = new();
+    private readonly List<RolePermission> _permissions = [];
 
     /// <summary>
     /// Gets the name of the application role.
@@ -38,15 +38,15 @@ public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
     public IReadOnlyCollection<RolePermission> Permissions => _permissions.AsReadOnly();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ApplicationRole"/> class.
+    /// Initializes a new instance of the <see cref="DomainRole"/> class.
     /// </summary>
     /// <param name="id">The unique identifier for the application role.</param>
     /// <param name="name">The name of the application role.</param>
     /// <param name="normalizedName">The normalized name of the application role.</param>
     /// <param name="description">The description of the application role.</param>
     /// <param name="isSystemDefined">A value indicating whether this application role is system-defined.</param>
-    private ApplicationRole(
-        ApplicationRoleId id,
+    private DomainRole(
+        DomainRoleId id,
         string name,
         string normalizedName,
         string description,
@@ -59,15 +59,15 @@ public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
     }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="ApplicationRole"/> class.
+    /// Creates a new instance of the <see cref="DomainRole"/> class.
     /// </summary>
     /// <param name="id">The unique identifier for the application role.</param>
     /// <param name="name">The name of the application role.</param>
     /// <param name="description">The description of the application role.</param>
     /// <param name="isSystemDefined">A value indicating whether this application role is system-defined.</param>
-    /// <returns>A new <see cref="ApplicationRole"/> instance.</returns>
-    public static ApplicationRole Create(
-        ApplicationRoleId id,
+    /// <returns>A new <see cref="DomainRole"/> instance.</returns>
+    public static DomainRole Create(
+        DomainRoleId id,
         string name,
         string description,
         bool isSystemDefined = false)
@@ -83,11 +83,11 @@ public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
         }
 
         string normalizedName = name.ToUpperInvariant();
-        var role = new ApplicationRole(id, name, normalizedName, description, isSystemDefined);
-        
+        var role = new DomainRole(id, name, normalizedName, description, isSystemDefined);
+
         // Raise domain event
         role.AddDomainEvent(new ApplicationRoleCreatedEvent(id, name, normalizedName, description, isSystemDefined));
-        
+
         return role;
     }
 
@@ -131,10 +131,10 @@ public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
 
         var rolePermission = RolePermission.Create(Id, permission.Id);
         _permissions.Add(rolePermission);
-        
+
         // Raise domain event
         AddDomainEvent(new ApplicationRolePermissionAddedEvent(Id, permission.Id, permission.Name));
-        
+
         return Result.Success();
     }
 
@@ -157,10 +157,10 @@ public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
         }
 
         _permissions.Remove(rolePermission);
-        
+
         // Raise domain event
         AddDomainEvent(new ApplicationRolePermissionRemovedEvent(Id, permission.Id, permission.Name));
-        
+
         return Result.Success();
     }
 
@@ -181,6 +181,6 @@ public sealed class ApplicationRole : AggregateRoot<ApplicationRoleId>
     /// <returns><c>true</c> if the application role has the permission; otherwise, <c>false</c>.</returns>
     public bool HasPermission(PermissionName permissionName)
     {
-        return _permissions.Any(rp => rp.Permission?.Name.Value == permissionName.Value);
+        return _permissions.Any(rp => string.Equals(rp.Permission?.Name.Value, permissionName.Value, StringComparison.Ordinal));
     }
 }

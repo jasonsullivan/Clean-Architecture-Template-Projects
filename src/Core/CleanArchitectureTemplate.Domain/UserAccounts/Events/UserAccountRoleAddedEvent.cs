@@ -16,7 +16,7 @@ public sealed class UserAccountRoleAddedEvent : DomainEvent
     /// <summary>
     /// Gets the identifier of the role that was added to the user account.
     /// </summary>
-    public ApplicationRoleId RoleId { get; }
+    public DomainRoleId RoleId { get; }
 
     /// <summary>
     /// Gets the name of the role that was added to the user account.
@@ -31,7 +31,7 @@ public sealed class UserAccountRoleAddedEvent : DomainEvent
     /// <param name="roleName">The name of the role that was added to the user account.</param>
     public UserAccountRoleAddedEvent(
         UserAccountId userAccountId,
-        ApplicationRoleId roleId,
+        DomainRoleId roleId,
         string roleName)
     {
         UserAccountId = userAccountId;
